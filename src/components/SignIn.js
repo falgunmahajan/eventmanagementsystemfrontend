@@ -28,8 +28,9 @@ const SignIn = () => {
         const res = await axios.post("/api/login",user);
         const data = await res.data
         console.log(data)
-        setError(false)
-        // navigate("/admin/dashboard")
+        setError(false);
+        (data.user.Role=="Customer")? navigate("/"):navigate("/serviceProvider")
+       
     }
     catch (err) {
         console.log(err)
@@ -39,7 +40,7 @@ const SignIn = () => {
     return (
         <div>
             <Navbar first="Home" second="SignUp" third="SignIn" path="/"  />
-            <Grid container spacing={2}   >
+            <Grid container spacing={2} sx={{minHeight:"75vh"}}  >
                 <Grid item xs={8} md={4} sx={{ mx: "auto", my: 10, pb: 2, pr: 2, backgroundImage: `url(${image})`, backgroundSize: "cover" }}>
                     {error && <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>{error}</Alert>}
                     <form onSubmit={handleSubmit}  className="bg-white p-4 w-100 my-2">
@@ -82,7 +83,7 @@ const SignIn = () => {
 
                         <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Sign In</Button>
                     </form>
-                    <p className='text-white text-center mt-2'>If you have not registered yet please register yourself <br />
+                    <p className='text-white text-center mt-4'>If you have not registered yet please register yourself <br />
                     <Link to="/SignUp" style={{color:"white", textDecoration:"none"}}>SignUp</Link>
                     </p>
                 </Grid>

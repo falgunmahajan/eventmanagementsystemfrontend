@@ -39,7 +39,8 @@ const handleSubmit = async (e) => {
   return (
     <div>
        <Navbar />
-       <Grid container spacing={2}   >
+       <div style={{minHeight:"75vh", display:"flex", alignItems:"center"}}>
+       <Grid container spacing={2} >
             <Grid item xs={8} md={4} sx={{ mx: "auto", my: 10, pb: 2, pr: 2, backgroundImage: `url(${image})`, backgroundSize: "cover" }}>
             {error && <Alert severity="error" sx={{fontSize:16, fontWeight:"bold"}}>{error}</Alert>}
                 <form onSubmit={handleSubmit} className="bg-white p-4 w-100 my-2">
@@ -69,6 +70,7 @@ const handleSubmit = async (e) => {
          
             </Grid>
         </Grid>
+        </div>
        <Footer/> 
     </div>
   )

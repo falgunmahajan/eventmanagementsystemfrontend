@@ -13,6 +13,7 @@ const Customer = () => {
        let data= (res.data).map(item=>{
               delete item._id;
               delete item.__v;
+              delete item.Role;
               delete item.Password;
               return item;
                })

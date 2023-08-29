@@ -4,10 +4,11 @@ import { Alert, Button, Grid, IconButton, InputAdornment, InputLabel, MenuItem, 
 import image from "../Images/footerBackground.jpeg"
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Footer from './Footer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const SignUp = () => {
+    const navigate=useNavigate()
     const [user,setUser]=useState("")
     const [error,setError]=useState(false)
     const [show,setShow]=useState(false)
@@ -32,11 +33,11 @@ const SignUp = () => {
         const data = await res.data
         console.log(data)
         setError(false)
-        // navigate("/admin/dashboard")
+        navigate("/SignIn")
     }
     catch (err) {
         console.log(err)
-        setError("Invalid Email or Password")
+        setError("This Email is already registered")
     }
   }
   const nameValid=(e)=>{
@@ -79,6 +80,9 @@ const SignUp = () => {
         setPasswordError(true)
     }
   }
+  const disabled=()=>{
+   return nameError || contactError || emailError || passwordError
+  }
   
     return (
         <div>
@@ -95,7 +99,7 @@ const SignUp = () => {
                            name="Role"
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            
+                            label="Select Your Role"
                             fullWidth
                             required
                             onChange={handleInput}
@@ -130,7 +134,7 @@ const SignUp = () => {
                                     </InputAdornment>
                             }} />
                              {passwordError && <span class="text-danger">Password must be atleast 8 characters long</span>}
-                        <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Sign Up</Button>
+                        <Button variant="contained" type="submit" disabled={disabled()} fullWidth sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Sign Up</Button>
                     </form>
                     <p className='text-white text-center mt-2'>If you have already registered please signin <br />
                     <Link to="/SignIn" style={{color:"white", textDecoration:"none"}}>SignIn</Link>

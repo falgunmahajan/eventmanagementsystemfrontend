@@ -25,11 +25,13 @@ export default function Dashboard() {
             catch (err) {
                 user = "";
             }
-
-            if (!user) {
+            if(!user)
+            {
                 navigate("/admin")
             }
-            else {
+            else{
+                if(user.data.validUser.Role=="Admin")
+                {
                 const res1 = await axios.get("/api/getService")
                 setServices(res1.data)
                 const res2 = await axios.get("/api/getCustomer")
@@ -38,7 +40,14 @@ export default function Dashboard() {
                 setServiceProvider(res3.data)
                 const res4 = await axios.get("/api/getBookedCustomer")
                 setbookedCustomer(res4.data)
+                }
+                else{
+                    navigate("/admin")
+                }
             }
+                
+                
+            
 
         })();
     },[])
