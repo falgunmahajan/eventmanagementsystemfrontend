@@ -5,9 +5,10 @@ import axios from "axios";
 import { Grid } from "@mui/material";
 import CardComponent from "../CardComponent";
 import { useNavigate } from "react-router-dom";
-
+import { ClipLoader } from 'react-spinners';
 const ServiceProviderDashboard = () => {
   const navigate = useNavigate();
+  const[loading,setLoading]=useState(true)
   const [services, setServices] = useState("");
   useEffect(() => {
     (async () => {
@@ -25,6 +26,7 @@ const ServiceProviderDashboard = () => {
           const res1 = await axios.get("/api/getService");
           console.log(res1);
           setServices(res1.data);
+          setLoading(false)
         }
         else{
           navigate("/");
@@ -40,6 +42,9 @@ const ServiceProviderDashboard = () => {
         third="ServicesAdded"
         path="/serviceProvider/"
       />
+       <div style={{textAlign:"center",marginTop:100}}>
+       <ClipLoader  loading={loading} />
+       </div>
       <Grid
         container
         sx={{
@@ -59,6 +64,7 @@ const ServiceProviderDashboard = () => {
                   width={300}
                   imgSrc={`http://localhost:8080/${item.ImageUrl}`}
                   title={item.Service}
+                  path="/serviceProvider/services"
                 />
               </Grid>
             );

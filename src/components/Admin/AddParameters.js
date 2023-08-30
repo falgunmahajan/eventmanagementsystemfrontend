@@ -34,6 +34,9 @@ const AddParameters = () => {
 const handleSubmit=async(e)=>{
 
   e.preventDefault();
+ 
+  console.log(inputField)
+  console.log(parameters)
   try{
     const res=await axios.post("/api/addParameters",parameters);
     console.log(res.data)
@@ -66,7 +69,7 @@ setError("Something Went wrong")
                         Add Parameter Form
                     </Typography>
                     <InputLabel id="demo-simple-select-label" sx={{ mt: 2 }}>Select Services</InputLabel>
-                    {services &&<Select
+                    <Select
                            name="Services"
                             labelId="demo-simple-select-label"
                             label="Select Services"
@@ -76,10 +79,10 @@ setError("Something Went wrong")
                             onChange={(e)=>setParameters({...parameters,Services:e.target.value})}
                             
                         >
-                          {services.map(item=>{
+                          {services &&services.map(item=>{
                             return <MenuItem value={item.Service}>{item.Service}</MenuItem>
                           })}
-                        </Select>}
+                        </Select>
                         <InputLabel id="demo-simple-select-label"  sx={{ mt: 2 }}>Type of Parameters</InputLabel>
                     <Select
                            name="Type Of Parameter"
@@ -97,19 +100,20 @@ setError("Something Went wrong")
                         {inputField.map(item=>{
                           return  <TextField
                           type="text"
-                          id="outlined-basic" 
+                         
                           label="Enter Parameter " 
                           variant="outlined" fullWidth required 
-                          // value={parameters.Parameters[item]}
-                          sx={{ mt: 2 }} name="Parameters"  onBlur={(e)=>{
-                            console.log(e.target.value)
-                           const addedparameters=[...parameters.Parameters,e.target.value]
+                          value={parameters.Parameters[item]}
+                          sx={{ mt: 2 }} name="Parameters"  onChange={(e)=>{
+                
+                           const addedparameters=[...(parameters.Parameters).slice(0,item),e.target.value,...(parameters.Parameters).slice(item+1)]
                            setParameters({...parameters,Parameters:addedparameters})
+                           console.log(item, parameters.Parameters[item], e.target.value)
                           }} />
                         })}
                    
                     
-                   <Button variant="contained" startIcon={<Add/>} onClick={()=>setInputField([...inputField,inputField+1])} sx={{my: 3, textTransform: "none", fontSize: 16 }}>Add</Button>
+                   <Button variant="contained" startIcon={<Add/>} onClick={()=>setInputField([...inputField,inputField[inputField.length-1]+1])} sx={{my: 3, textTransform: "none", fontSize: 16 }}>Add</Button>
                     <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: "#d23838", '&:hover':{backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Submit</Button>
                 </form>
                 </Grid>

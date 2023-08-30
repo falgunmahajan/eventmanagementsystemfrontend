@@ -5,14 +5,18 @@ import image from "../Images/background.jpg"
 import { Grid, Typography } from '@mui/material';
 import CardComponent from './CardComponent';
 import Footer from './Footer';
+import { ClipLoader } from 'react-spinners';
 const Home = () => {
   const [login, setLogin] = useState(false);
   const [services, setServices] = useState("");
+  const[loading,setLoading]=useState(true)
+  const path=login?"/customers/services":"/SignIn"
   useEffect(() => {
     (async () => {
       const res1 = await axios.get("/api/getService")
       console.log(res1)
       setServices(res1.data)
+      setLoading(false)
       let user;
             try {
                 user = await axios.get("/api/validUser")
@@ -51,10 +55,14 @@ const Home = () => {
       </div>
       <div id="Services" style={{ marginTop: 50 }}>
         <Typography variant="h3" sx={{ textAlign: "center" }}>Service Categories</Typography>
+        <div style={{textAlign:"center",marginTop:30}}>
+       <ClipLoader  loading={loading} />
+       </div> 
         <Grid container sx={{ ml:"auto", px: 3, mt: 4 }}>
+       
           {services && services.map(item => {
             return <Grid item xs={6} md={3} sx={{px:10}}>
-              <CardComponent width={300} imgSrc={`http://localhost:8080/${item.ImageUrl}`} title={item.Service} />
+              <CardComponent width={300} imgSrc={`http://localhost:8080/${item.ImageUrl}`} title={item.Service} path={path}  />
             </Grid>
           })}
 
