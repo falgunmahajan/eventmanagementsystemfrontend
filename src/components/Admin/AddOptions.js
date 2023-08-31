@@ -120,7 +120,7 @@ const AddOptions = () => {
                           return  <TextField
                           type="text"
                          
-                          label="Enter Parameter " 
+                          label="Enter Options " 
                           variant="outlined" fullWidth required 
                           value={options.Options[item]}
                           sx={{ mt: 2 }} name="Options" 

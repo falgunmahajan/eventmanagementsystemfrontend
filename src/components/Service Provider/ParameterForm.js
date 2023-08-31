@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import image from "../../Images/footerBackground.jpeg";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
@@ -25,10 +25,24 @@ const ParameterForm = () => {
   const [AddOnsParameters, setAddOnsParameters] = useState("");
   const [loading, setLoading] = useState(true);
   const [locations,setLocations]=useState()
+
+  const navigate=useNavigate("")
+  const ref=useRef()
   let service = searchParams.get("service");
   console.log(service);
   useEffect(() => {
     (async () => {
+      let user;
+      try {
+        user = await axios.get("/api/validUser");
+        console.log(user.data);
+      } catch (err) {
+        user = "";
+      }
+      if (!user) {
+        navigate("/");
+      } else {
+        if (user.data.validUser.Role == "Service Provider") {
       const res = await axios.get(`/api/getServiceOptions?service=${service}`);
       setGoldenParameters(res.data.GoldenParameter);
       setAddOnsParameters(res.data.AddOnsParameter);
@@ -36,10 +50,50 @@ const ParameterForm = () => {
       const response = await axios.get("/api/getLocations")
       setLocations(response.data)
       console.log(response.data)
-    
+        }
+      else{
+        navigate("/");
+      }}
     })();
   }, []);
   console.log(GoldenParameters, AddOnsParameters);
+ const GoldenArray=GoldenParameters && GoldenParameters.map(item=>{
+  return item.Options.map(subItem=>{
+  return {ischecked:false}
+  })
+ })
+ const AddOnsArray=AddOnsParameters && AddOnsParameters.map(item=>{
+  return item.Options.map(subItem=>{
+  return {ischecked:false}
+  })
+ })
+ const initialState=[...GoldenArray,...AddOnsArray]
+ console.log(initialState)
+ const [checkBoxData,setCheckBoxdata]=useState(initialState)
+ const selectOneCheckbox=(divIndex,checkBoxIndex)=>
+ {
+  console.log(divIndex,checkBoxIndex)
+  const updatedCheckboxData=checkBoxData.map((div,index)=>{
+    if(index==divIndex)
+    {
+      return div.map((checkbox,ind)=>{
+        if(ind==checkBoxIndex)
+        {
+          return{
+            ...checkbox,
+            ischecked:true
+          };
+        }
+        return{
+          ...checkbox,
+          ischecked:false
+        };
+      })
+    }
+    return div;
+  })
+  setCheckBoxdata(updatedCheckboxData)
+ }
   return (
     <div>
      
@@ -91,9 +145,9 @@ const ParameterForm = () => {
                         </Select>
                         <TextField id="outlined-basic" label="Price Per Km" variant="outlined" fullWidth required sx={{mt:2}}/>
             {GoldenParameters &&
-              GoldenParameters.map((item) => {
+              GoldenParameters.map((item,itemIndex) => {
                 return (
-                  <div>
+                  <div id={item.Parameter}  >
                     <FormLabel
                       sx={{
                         mb: 1,
@@ -107,11 +161,11 @@ const ParameterForm = () => {
                     </FormLabel>{" "}
                     <br />
                     <Grid container>
-                      {item.Options.map((subItem) => {
+                      {item.Options.map((subItem,subItemIndex) => {
                         return (
                           <Grid item xs={12} lg={6}>
                             <FormControlLabel
-                              control={<Checkbox />}
+                              control={<Checkbox name={item.Parameter} value={subItem} onChange={()=>selectOneCheckbox(itemIndex,subItemIndex)} />}
                               label={subItem}
                             />
                           </Grid>
@@ -123,9 +177,9 @@ const ParameterForm = () => {
               })}
               <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required sx={{mt:2}} />
                    {AddOnsParameters &&
-              AddOnsParameters.map((item) => {
+              AddOnsParameters.map((item,itemIndex) => {
                 return (
-                  <div>
+                  <div id={item.Parameter}  >
                     <FormLabel
                       sx={{
                         mb: 1,
@@ -139,11 +193,11 @@ const ParameterForm = () => {
                     </FormLabel>{" "}
                     <br />
                     <Grid container>
-                      {item.Options.map((subItem) => {
+                      {item.Options.map((subItem,subItemIndex) => {
                         return (
                           <Grid item xs={12} lg={6}>
                             <FormControlLabel
-                              control={<Checkbox />}
+                              control={<Checkbox value={subItem} onChange={()=>selectOneCheckbox(itemIndex+GoldenParameters.length,subItemIndex)} />}
                               label={subItem}
                             />
                           </Grid>

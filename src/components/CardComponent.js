@@ -19,7 +19,7 @@ const CardComponent = (props) => {
           component="img"
           height="140"
           image={props.imgSrc}
-          alt="green iguana" 
+          alt={props.title} 
           
         />
         <CardContent>
