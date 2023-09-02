@@ -25,7 +25,15 @@ const ParameterForm = () => {
   const [AddOnsParameters, setAddOnsParameters] = useState("");
   const [loading, setLoading] = useState(true);
   const [locations,setLocations]=useState()
-
+  const [checkBoxData,setCheckBoxdata]=useState([])
+  const [data,setData]=useState({
+    Service:"",
+    ServiceProviderName:"",
+    ServiceProvidedBy:"",
+    Location:"",
+    GoldenParameters:{},
+    AddOnsParameters:[]
+  })
   const navigate=useNavigate("")
   const ref=useRef()
   let service = searchParams.get("service");
@@ -36,6 +44,10 @@ const ParameterForm = () => {
       try {
         user = await axios.get("/api/validUser");
         console.log(user.data);
+        console.log(service)
+        const userData=user.data.validUser;
+        console.log(userData)
+        setData({...data,Service:service,ServiceProviderName:userData.Name,ServiceProvidedBy:userData._id})
       } catch (err) {
         user = "";
       }
@@ -44,12 +56,27 @@ const ParameterForm = () => {
       } else {
         if (user.data.validUser.Role == "Service Provider") {
       const res = await axios.get(`/api/getServiceOptions?service=${service}`);
-      setGoldenParameters(res.data.GoldenParameter);
-      setAddOnsParameters(res.data.AddOnsParameter);
+      const {GoldenParameter,AddOnsParameter}=res.data;
+      console.log(GoldenParameter,AddOnsParameter)
+      setGoldenParameters(GoldenParameter);
+      setAddOnsParameters(AddOnsParameter);
       setLoading(false);
       const response = await axios.get("/api/getLocations")
       setLocations(response.data)
       console.log(response.data)
+      const GoldenArray=GoldenParameter && GoldenParameter.map(item=>{
+        return item.Options.map(subItem=>{
+        return {ischecked:false}
+        })
+       })
+       const AddOnsArray=AddOnsParameter && AddOnsParameter.map(item=>{
+        return item.Options.map(subItem=>{
+        return {ischecked:false}
+        })
+       })
+       const initialState=[...GoldenArray,...AddOnsArray]
+       console.log(initialState)
+    setCheckBoxdata([...initialState])
         }
       else{
         navigate("/");
@@ -57,28 +84,20 @@ const ParameterForm = () => {
     })();
   }, []);
   console.log(GoldenParameters, AddOnsParameters);
- const GoldenArray=GoldenParameters && GoldenParameters.map(item=>{
-  return item.Options.map(subItem=>{
-  return {ischecked:false}
-  })
- })
- const AddOnsArray=AddOnsParameters && AddOnsParameters.map(item=>{
-  return item.Options.map(subItem=>{
-  return {ischecked:false}
-  })
- })
- const initialState=[...GoldenArray,...AddOnsArray]
- console.log(initialState)
- const [checkBoxData,setCheckBoxdata]=useState(initialState)
+  console.log(checkBoxData)
  const selectOneCheckbox=(divIndex,checkBoxIndex)=>
  {
   console.log(divIndex,checkBoxIndex)
+  console.log(checkBoxData[0])
   const updatedCheckboxData=checkBoxData.map((div,index)=>{
+    console.log("index",index)
     if(index==divIndex)
     {
       return div.map((checkbox,ind)=>{
+        console.log(ind)
         if(ind==checkBoxIndex)
         {
+          console.log("something")
           return{
             ...checkbox,
             ischecked:true
@@ -93,6 +112,10 @@ const ParameterForm = () => {
     return div;
   })
   setCheckBoxdata(updatedCheckboxData)
+ }
+ const handleSubmit=(e)=>{
+  e.preventDefault();
+  console.log(data)
  }
   return (
     <div>
@@ -121,7 +144,7 @@ const ParameterForm = () => {
               {error}
             </Alert>
           )} */}
-          <form className="bg-white p-4 w-100 my-2">
+          <form onSubmit={handleSubmit} className="bg-white p-4 w-100 my-2">
             <Typography
               variant="h4"
               component="div"
@@ -134,10 +157,10 @@ const ParameterForm = () => {
                            name="Services"
                             labelId="demo-simple-select-label"
                             label="Select Locations"
-                        //    value={options.Services}
+                          //  value={data.Location.Name}
                             fullWidth
                             required
-                            onChange={(e)=>console.log(e.target.value)}
+                            onChange={(e)=>setData({...data,Location:e.target.value})}
                         >
                           {locations &&locations.map(item=>{
                             return <MenuItem value={{Name:item.name,Latitude:item.latitude,Longitude:item.longitude}}>{item.name}</MenuItem>
@@ -165,7 +188,13 @@ const ParameterForm = () => {
                         return (
                           <Grid item xs={12} lg={6}>
                             <FormControlLabel
-                              control={<Checkbox name={item.Parameter} value={subItem} onChange={()=>selectOneCheckbox(itemIndex,subItemIndex)} />}
+                              control={<Checkbox name={item.Parameter} 
+                              value={subItem} 
+                              checked={checkBoxData.length && checkBoxData[itemIndex][subItemIndex].ischecked}
+                              onChange={(e)=>{
+                                selectOneCheckbox(itemIndex,subItemIndex)
+                                const parameters={...data.GoldenParameters,[e.target.name]:e.target.value}
+                              setData({...data,GoldenParameters:parameters})}} />}
                               label={subItem}
                             />
                           </Grid>
@@ -175,7 +204,10 @@ const ParameterForm = () => {
                   </div>
                 );
               })}
-              <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required sx={{mt:2}} />
+              <TextField id="outlined-basic" label="Price" name="Price" variant="outlined" fullWidth required onChange={(e)=>{
+                 const parameters={...data.GoldenParameters,[e.target.name]:e.target.value}
+                 setData({...data,GoldenParameters:parameters})}}
+               sx={{mt:2}} />
                    {AddOnsParameters &&
               AddOnsParameters.map((item,itemIndex) => {
                 return (
@@ -197,14 +229,30 @@ const ParameterForm = () => {
                         return (
                           <Grid item xs={12} lg={6}>
                             <FormControlLabel
-                              control={<Checkbox value={subItem} onChange={()=>selectOneCheckbox(itemIndex+GoldenParameters.length,subItemIndex)} />}
+                              control={<Checkbox
+                                 value={subItem} 
+                                 name={item.Parameter} 
+                                 checked={checkBoxData.length && checkBoxData[itemIndex+GoldenParameters.length][subItemIndex].ischecked}
+                                 onChange={(e)=>{
+                                  selectOneCheckbox(itemIndex+GoldenParameters.length,subItemIndex)
+                                  const parameter={...data.AddOnsParameters[e.target.name],value:e.target.value};
+                                const parameterObject=[...data.AddOnsParameters,{[e.target.name]:parameter}];
+                               setData({...data,AddOnsParameters:parameterObject})}}/>}
                               label={subItem}
                             />
                           </Grid>
                         );
                       })}
                     </Grid>
-                    <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required sx={{mt:2}}/>
+                    <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required 
+                    name={`${item.Parameter} price`}
+                    onChange={(e)=>{
+                      const parameter={...data.AddOnsParameters[itemIndex][item.Parameter],[e.target.name]:e.target.value};
+                      console.log(data.AddOnsParameters[itemIndex][item.Parameter]);
+                               const parameterObject=[...data.AddOnsParameters.slice(0,itemIndex),{[item.Parameter]:parameter},...data.AddOnsParameters.slice(itemIndex+1)]
+                               setData({...data,AddOnsParameters:parameterObject})
+                    }}
+                    sx={{mt:2}}/>
                   </div>
                 );
               })}
