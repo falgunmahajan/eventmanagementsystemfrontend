@@ -59,7 +59,7 @@ const ServiceProviderDashboard = () => {
         {services &&
           services.map((item) => {
             return (
-              <Grid item xs={6} md={3} sx={{ px: 10 }}>
+              <Grid item xs={12} sm={6} lg={3} sx={{ px: 10 }}>
                 <CardComponent
                   width={300}
                   imgSrc={`http://localhost:8080/${item.ImageUrl}`}

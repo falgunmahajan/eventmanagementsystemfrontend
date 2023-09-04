@@ -44,16 +44,16 @@ const Home = () => {
     <div>
 
       {!login &&
-        <Navbar first="Home" second="Service" third="About" fourth="SignUp" fifth="SignIn" path="/" />
+        <Navbar first="Home" fourth="SignUp" fifth="SignIn" path="/" />
       }
       {login &&
-        <Navbar first="Home" second="Service" third="About" fourth="ViewBooking" path="/" />
+        <Navbar first="Home"  fourth="ViewBooking" path="/" />
       }
       <div className="d-flex align-items-center justify-content-center text-white flex-column" style={{ backgroundImage: `url(${image})`, backgroundSize: "cover", height: '70vh' }}>
         <Typography variant="h2">Welcome to Event Management</Typography>
         <Typography variant="h5" sx={{ mt: 2 }}>Find the Perfect Services For Your Special Occasions</Typography>
       </div>
-      <div id="Services" style={{ marginTop: 50 }}>
+      <div id="Service" style={{ marginTop: 50 }}>
         <Typography variant="h3" sx={{ textAlign: "center" }}>Service Categories</Typography>
         <div style={{textAlign:"center",marginTop:30}}>
        <ClipLoader  loading={loading} />
@@ -67,7 +67,7 @@ const Home = () => {
           })}
 
         </Grid>
-        <div id="aboutUs" style={{ marginTop: 40 }}>
+        <div id="About" style={{ marginTop: 40 }}>
           <Typography variant="h3" sx={{ textAlign: "center" }}>About us</Typography></div>
         <div className="mx-5 px-5 w-100, mt-3 mb-5">
           <Typography sx={{ fontSize: 21,mx:6 }}>In a world where events hold immense significance in both personal and professional realms, the process of planning and booking services can often be overwhelming.</Typography>

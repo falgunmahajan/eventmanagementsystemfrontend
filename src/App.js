@@ -19,6 +19,9 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import ServiceProviderDashboard from "./components/Service Provider/ServiceProviderDashboard";
 import ParameterForm from "./components/Service Provider/ParameterForm";
+import ServiceAdded from "./components/Service Provider/ServiceAdded";
+import ServiceFilter from "./components/Customer/ServiceFilter";
+
 
 function App() {
   return (
@@ -32,6 +35,10 @@ function App() {
       <Route path="/serviceProvider">
       <Route index element ={<ServiceProviderDashboard/>}/> 
       <Route path="services" element={<ParameterForm/>}/>
+      <Route path="ServicesAdded" element={<ServiceAdded/>}/>
+      </Route>
+      <Route path="/customers">
+        <Route path="services" element={<ServiceFilter/>}/>
       </Route>
     <Route path="/admin">
       <Route index element ={<Admin/>}/>

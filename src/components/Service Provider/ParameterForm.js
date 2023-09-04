@@ -26,17 +26,24 @@ const ParameterForm = () => {
   const [loading, setLoading] = useState(true);
   const [locations,setLocations]=useState()
   const [checkBoxData,setCheckBoxdata]=useState([])
+  const [error,setError]=useState(false)
+  const [success,setSuccess]=useState(false)
+  const [initial,setInitial]=useState()
   const [data,setData]=useState({
     Service:"",
     ServiceProviderName:"",
     ServiceProvidedBy:"",
-    Location:"",
+    Location:{
+      value:"",
+      price:""
+    },
     GoldenParameters:{},
-    AddOnsParameters:[]
+    AddOnsParameters:{}
   })
   const navigate=useNavigate("")
   const ref=useRef()
   let service = searchParams.get("service");
+  
   console.log(service);
   useEffect(() => {
     (async () => {
@@ -77,6 +84,7 @@ const ParameterForm = () => {
        const initialState=[...GoldenArray,...AddOnsArray]
        console.log(initialState)
     setCheckBoxdata([...initialState])
+    setInitial([...initialState])
         }
       else{
         navigate("/");
@@ -113,14 +121,27 @@ const ParameterForm = () => {
   })
   setCheckBoxdata(updatedCheckboxData)
  }
- const handleSubmit=(e)=>{
+ const handleSubmit=async(e)=>{
   e.preventDefault();
   console.log(data)
+  try{
+ const res=await axios.post("/api/registerServices",data)
+ setError(false)
+ setSuccess("Your data is successfully submit")
+ setCheckBoxdata([...initial])
+ e.target.reset();
+  }
+  catch(err)
+  {
+    setSuccess(false)
+    setError("Something went wrong")
+    console.log(err)
+  }
  }
   return (
     <div>
      
-      <Navbar first="Home" second="ViewBooking" third="ServicesAdded" />
+      <Navbar first="Home" second="ViewBooking" third="ServicesAdded" path="/serviceProvider/" />
       <div style={{ textAlign: "center", marginTop: 30 }}>
         <ClipLoader loading={loading} />
       </div>
@@ -139,11 +160,16 @@ const ParameterForm = () => {
             backgroundSize: "cover",
           }}
         >
-          {/* {error && (
+          {error && (
             <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>
               {error}
             </Alert>
-          )} */}
+          )}
+          {success && (
+            <Alert severity="success" sx={{ fontSize: 16, fontWeight: "bold" }}>
+              {success}
+            </Alert>
+          )}
           <form onSubmit={handleSubmit} className="bg-white p-4 w-100 my-2">
             <Typography
               variant="h4"
@@ -160,13 +186,23 @@ const ParameterForm = () => {
                           //  value={data.Location.Name}
                             fullWidth
                             required
-                            onChange={(e)=>setData({...data,Location:e.target.value})}
+                            onChange={(e)=>{
+                              const location={...data.Location,value:JSON.parse(e.target.value)}
+                              setData({...data,Location:location})
+                            }}
                         >
                           {locations &&locations.map(item=>{
-                            return <MenuItem value={{Name:item.name,Latitude:item.latitude,Longitude:item.longitude}}>{item.name}</MenuItem>
+                            return <MenuItem value={JSON.stringify({Name:item.name,Latitude:item.latitude,Longitude:item.longitude})}>{item.name}</MenuItem>
                           })}
                         </Select>
-                        <TextField id="outlined-basic" label="Price Per Km" variant="outlined" fullWidth required sx={{mt:2}}/>
+                        <TextField id="outlined-basic" 
+                        label="Price Per Km" 
+                        variant="outlined" fullWidth required sx={{mt:2}}
+                        onChange={(e)=>{
+                          const price={...data.Location,price:e.target.value}
+                          setData({...data,Location:price})
+                        }}
+                        />
             {GoldenParameters &&
               GoldenParameters.map((item,itemIndex) => {
                 return (
@@ -236,7 +272,7 @@ const ParameterForm = () => {
                                  onChange={(e)=>{
                                   selectOneCheckbox(itemIndex+GoldenParameters.length,subItemIndex)
                                   const parameter={...data.AddOnsParameters[e.target.name],value:e.target.value};
-                                const parameterObject=[...data.AddOnsParameters,{[e.target.name]:parameter}];
+                                const parameterObject={...data.AddOnsParameters,[e.target.name]:parameter};
                                setData({...data,AddOnsParameters:parameterObject})}}/>}
                               label={subItem}
                             />
@@ -247,9 +283,9 @@ const ParameterForm = () => {
                     <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required 
                     name={`${item.Parameter} price`}
                     onChange={(e)=>{
-                      const parameter={...data.AddOnsParameters[itemIndex][item.Parameter],[e.target.name]:e.target.value};
-                      console.log(data.AddOnsParameters[itemIndex][item.Parameter]);
-                               const parameterObject=[...data.AddOnsParameters.slice(0,itemIndex),{[item.Parameter]:parameter},...data.AddOnsParameters.slice(itemIndex+1)]
+                      const parameter={...data.AddOnsParameters[item.Parameter],price:e.target.value};
+                      console.log(data.AddOnsParameters[item.Parameter]);
+                               const parameterObject={...data.AddOnsParameters,[item.Parameter]:parameter}
                                setData({...data,AddOnsParameters:parameterObject})
                     }}
                     sx={{mt:2}}/>
