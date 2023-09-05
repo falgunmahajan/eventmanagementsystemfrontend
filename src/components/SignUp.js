@@ -107,9 +107,9 @@ const SignUp = () => {
                             <MenuItem value="Service Provider">Service Provider</MenuItem>
                             <MenuItem value="Customer">Customer</MenuItem>
                         </Select>
-                        <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Name" onChange={nameValid}  />
+                        <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required   sx={{ mt: 2 }} name="Name" onChange={nameValid}  />
                         {nameError && <span class="text-danger">Please Enter the Valid Name</span>}
-                        <TextField error={contactError} id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
+                        <TextField error={contactError} id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
                         {contactError && <span class="text-danger">Please Enter the Valid Contact Number</span>}
                         <TextField error={emailError} id="outlined-basic" label="Enter Email" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Email" onChange={emailValid} />
                         {emailError && <span class="text-danger">Please Enter the Valid Email Id</span>}

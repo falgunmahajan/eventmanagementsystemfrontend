@@ -50,7 +50,7 @@ const TableComponent = (props) => {
             if(key=="Location")
             {
               return  <StyledTableCell align="center" key={key} >{item.Location.value.Name}
-              {(item.Location.price)&&   <div><br/><b>Price:</b>{item.Location.price}</div>}
+              {(item.Location.price)&&   <div><br/><b>Price per km:</b>{item.Location.price}</div>}
             </StyledTableCell>
             }
             if(typeof item[key]==="object")
@@ -60,7 +60,7 @@ const TableComponent = (props) => {
                 {
                  return  <StyledTableCell align="center" key={subkey} >{
                   Object.keys(item[key][subkey]).map(childkey=>{
-                    return <div> <b>{childkey}</b>:{item[key][subkey][childkey]}</div>
+                    return <div> <b>{childkey!=="value" && `${childkey} :`}</b> {item[key][subkey][childkey]}</div>
                   })
                  }</StyledTableCell>
                 

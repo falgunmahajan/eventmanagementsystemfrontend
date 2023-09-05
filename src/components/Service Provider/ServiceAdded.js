@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
-import { Grid, Table, Typography } from '@mui/material'
+import { Grid,  Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { ClipLoader } from 'react-spinners';
