@@ -52,20 +52,22 @@ useEffect(()=>{
         third="ServicesAdded"
         path="/serviceProvider/"
       />
-     {loading && <div style={{textAlign:"center", marginTop:100}}>
-       <ClipLoader  loading={loading} />
-       </div> }
+    
        <div style={{minHeight:"75vh"}}>
       <Grid container >
-      
-       {data && 
-       <>
-        <Grid item xs={12} sx={{textAlign:"center"}}>
+      <Grid item xs={12} sx={{textAlign:"center"}}>
             <Typography variant="h4" component="div" sx={{my:5}}>Services Added Details</Typography></Grid>
+            <Grid item xs={8} md={4} sx={{m:"auto"}}>
+            {loading && <div style={{textAlign:"center", marginTop:100}}>
+       <ClipLoader  loading={loading} />
+       </div> }
+       </Grid>
+       {data && 
         <Grid item xs={12} md={10} sx={{mx:'auto',my:5}}>
-            <TableComponent data={data}/>
+           {(data.length) ? <TableComponent data={data}/>:
+           <Typography variant="h5" sx={{textAlign:"center"}}>You have not added any services yet.</Typography>}
         </Grid>
-        </>
+        
        }
       </Grid>
       </div>
