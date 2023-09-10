@@ -52,9 +52,9 @@ const ParameterForm = () => {
         user = await axios.get("/api/validUser");
         console.log(user.data);
         console.log(service)
-        const userData=user.data.validUser;
-        console.log(userData)
-        setData({...data,Service:service,ServiceProviderName:userData.Name,ServiceProvidedBy:userData._id})
+        // const userData=user.data.validUser;
+        // console.log(userData)
+        
       } catch (err) {
         user = "";
       }
@@ -85,6 +85,17 @@ const ParameterForm = () => {
        console.log(initialState)
     setCheckBoxdata([...initialState])
     setInitial([...initialState])
+    const golden=GoldenParameter && GoldenParameter.reduce((acc,current)=>{
+      acc[current.Parameter]={}
+      return acc;
+     },{})
+     const Addon=AddOnsParameter && AddOnsParameter.reduce((acc,current)=>{
+      acc[current.Parameter]={value:"No"}
+      return acc;
+     },{})
+     console.log(Addon,golden)
+     setData({...data,Service:service,ServiceProviderName:user.data.validUser.Name,ServiceProvidedBy:user.data.validUser._id,GoldenParameters:golden,AddOnsParameters:Addon})
+    //  setData({...data,GoldenParameters:golden,AddOnsParameters:Addon})
         }
       else{
         navigate("/");
@@ -93,7 +104,8 @@ const ParameterForm = () => {
   }, []);
   console.log(GoldenParameters, AddOnsParameters);
   console.log(checkBoxData)
- const selectOneCheckbox=(divIndex,checkBoxIndex)=>
+  console.log(data)
+ const selectOneCheckbox=(e,divIndex,checkBoxIndex)=>
  {
   console.log(divIndex,checkBoxIndex)
   console.log(checkBoxData[0])
@@ -106,10 +118,12 @@ const ParameterForm = () => {
         if(ind==checkBoxIndex)
         {
           console.log("something")
-          return{
+          if(e.target.checked)
+          {
+            return{
             ...checkbox,
             ischecked:true
-          };
+          };}
         }
         return{
           ...checkbox,
@@ -121,23 +135,77 @@ const ParameterForm = () => {
   })
   setCheckBoxdata(updatedCheckboxData)
  }
- const handleSubmit=async(e)=>{
-  e.preventDefault();
-  console.log(data)
-  try{
- const res=await axios.post("/api/registerServices",data)
- setError(false)
- setSuccess("Your data is successfully submit")
- setCheckBoxdata([...initial])
- e.target.reset();
+ const isRequired=(divIndex)=>{
+  console.log(checkBoxData)
+  console.log(divIndex)
+  
+  let checked=false;
+  if(checkBoxData.length)
+{ 
+  checkBoxData[divIndex].map(item=>{
+    if(item.ischecked)
+    {
+      checked=true;
+    }
+  })}
+  if(checked) 
+  {
+    return true
   }
-  catch(err)
+  return false
+ }
+
+ const isSubmit=()=>{
+  let checked=[]
+  for(let item=0; item<GoldenParameters.length; item++)
+  {
+    if(checkBoxData.length)
+    {
+    checkBoxData[item].map(subitem=>{
+      if(subitem.ischecked)
+      {
+        checked[item]=true;
+      }
+    })}
+    if(!checked[item])
+    {
+      checked[item]=false
+    }
+   
+  }
+  const submit=checked.every(item=>item===true)
+  console.log(submit)
+  return submit
+ }
+ const handleSubmit=async(e)=>{
+
+
+  e.preventDefault();
+  
+  console.log(data)
+  if(!isSubmit())
   {
     setSuccess(false)
-    setError("Something went wrong")
-    console.log(err)
+    setError("Please fill all the required fields")
   }
- }
+  else
+  {
+
+    try{
+      const res=await axios.post("/api/registerServices",data)
+      setError(false)
+      setSuccess("Your data is successfully submit")
+      setCheckBoxdata([...initial])
+      e.target.reset();
+    }
+    catch(err)
+    {
+      setSuccess(false)
+      setError("Something went wrong")
+      console.log(err)
+    }
+  }
+}
   return (
     <div>
      
@@ -196,6 +264,7 @@ const ParameterForm = () => {
                           })}
                         </Select>
                         <TextField id="outlined-basic" 
+                        type="number"
                         label="Price Per Km" 
                         variant="outlined" fullWidth required sx={{mt:2}}
                         onChange={(e)=>{
@@ -208,6 +277,7 @@ const ParameterForm = () => {
                 return (
                   <div id={item.Parameter}  >
                     <FormLabel
+                    required
                       sx={{
                         mb: 1,
                         mt: 2,
@@ -228,7 +298,7 @@ const ParameterForm = () => {
                               value={subItem} 
                               checked={checkBoxData.length && checkBoxData[itemIndex][subItemIndex].ischecked}
                               onChange={(e)=>{
-                                selectOneCheckbox(itemIndex,subItemIndex)
+                                selectOneCheckbox(e,itemIndex,subItemIndex)
                                 const parameters={...data.GoldenParameters,[e.target.name]:e.target.value}
                               setData({...data,GoldenParameters:parameters})}} />}
                               label={subItem}
@@ -240,7 +310,7 @@ const ParameterForm = () => {
                   </div>
                 );
               })}
-              <TextField id="outlined-basic" label="Price" name="Price" variant="outlined" fullWidth required onChange={(e)=>{
+              <TextField id="outlined-basic" type="number" label="Price" name="Price"  variant="outlined" fullWidth required onChange={(e)=>{
                  const parameters={...data.GoldenParameters,[e.target.name]:e.target.value}
                  setData({...data,GoldenParameters:parameters})}}
                sx={{mt:2}} />
@@ -270,9 +340,10 @@ const ParameterForm = () => {
                                  name={item.Parameter} 
                                  checked={checkBoxData.length && checkBoxData[itemIndex+GoldenParameters.length][subItemIndex].ischecked}
                                  onChange={(e)=>{
-                                  selectOneCheckbox(itemIndex+GoldenParameters.length,subItemIndex)
+                                  selectOneCheckbox(e,itemIndex+GoldenParameters.length,subItemIndex)
                                   const parameter={...data.AddOnsParameters[e.target.name],value:e.target.value};
                                 const parameterObject={...data.AddOnsParameters,[e.target.name]:parameter};
+                                console.log(parameterObject)
                                setData({...data,AddOnsParameters:parameterObject})}}/>}
                               label={subItem}
                             />
@@ -280,12 +351,13 @@ const ParameterForm = () => {
                         );
                       })}
                     </Grid>
-                    <TextField id="outlined-basic" label="Price" variant="outlined" fullWidth required 
+                    <TextField id="outlined-basic" label="Price" type="number" variant="outlined" fullWidth required={isRequired(itemIndex+GoldenParameters.length)}
                     name={`${item.Parameter} price`}
                     onChange={(e)=>{
                       const parameter={...data.AddOnsParameters[item.Parameter],price:e.target.value};
                       console.log(data.AddOnsParameters[item.Parameter]);
                                const parameterObject={...data.AddOnsParameters,[item.Parameter]:parameter}
+                               console.log(parameterObject)
                                setData({...data,AddOnsParameters:parameterObject})
                     }}
                     sx={{mt:2}}/>

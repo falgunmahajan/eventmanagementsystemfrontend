@@ -63,7 +63,7 @@ useEffect(()=>{
        </div> }
        </Grid>
        {data && 
-        <Grid item xs={12} md={10} sx={{mx:'auto',my:5}}>
+        <Grid item xs={12} md={10} sx={{mx:'auto',mb:10}}>
            {(data.length) ? <TableComponent data={data}/>:
            <Typography variant="h5" sx={{textAlign:"center"}}>You have not added any services yet.</Typography>}
         </Grid>

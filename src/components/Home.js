@@ -50,8 +50,8 @@ const Home = () => {
         <Navbar first="Home"  fourth="ViewBooking" path="/" />
       }
       <div className="d-flex align-items-center justify-content-center text-white flex-column" style={{ backgroundImage: `url(${image})`, backgroundSize: "cover", height: '70vh' }}>
-        <Typography variant="h2">Welcome to Event Management</Typography>
-        <Typography variant="h5" sx={{ mt: 2 }}>Find the Perfect Services For Your Special Occasions</Typography>
+        <Typography variant="h2" sx={{ typography: { md: 'h2', xs: 'h5' } }}>Welcome to Event Management</Typography>
+        <Typography variant="h5" sx={{typography: { sm: 'h5', xs: 'body2' }, mt: 2 }}>Find the Perfect Services For Your Special Occasions</Typography>
       </div>
       <div id="Service" style={{ marginTop: 50 }}>
         <Typography variant="h3" sx={{ textAlign: "center" }}>Service Categories</Typography>
@@ -61,7 +61,7 @@ const Home = () => {
         <Grid container sx={{ ml:"auto", px: 3, mt: 4 }}>
        
           {services && services.map(item => {
-            return <Grid item xs={6} md={3} sx={{px:10}}>
+            return <Grid item xs={12} sm={6} lg={3} sx={{px:{xs:0,sm:5}}}>
               <CardComponent width={300} imgSrc={`http://localhost:8080/${item.ImageUrl}`} title={item.Service} path={path}  />
             </Grid>
           })}
@@ -70,10 +70,10 @@ const Home = () => {
         <div id="About" style={{ marginTop: 40 }}>
           <Typography variant="h3" sx={{ textAlign: "center" }}>About us</Typography></div>
         <div className="mx-5 px-5 w-100, mt-3 mb-5">
-          <Typography sx={{ fontSize: 21,mx:6 }}>In a world where events hold immense significance in both personal and professional realms, the process of planning and booking services can often be overwhelming.</Typography>
-          <Typography sx={{ fontSize: 21,mx:6 , mt: 2 }}>Event Management is a comprehensive platform aims to bridge this gap by offering a streamlined ecosystem that connects customers seeking event services with reliable and skilled service providers.</Typography>
-          <Typography sx={{ fontSize: 21,mx:6 , mt: 2 }}>For customers, we provide a one-stop destination to discover and book, a wide range of services related to events like weddings, college farewells, birthdays, and conference meetings.</Typography>
-          <Typography sx={{ fontSize: 21,mx:6 , mt: 2,mb:20 }}>On the other side, service providers have the opportunity to showcase their offerings to a diverse customer base. Through our platform, providers can efficiently add their services and view customer booking.</Typography>
+          <Typography sx={{ fontSize:{xs:18,sm:21},mx:{xs:0,sm:6 }}}>In a world where events hold immense significance in both personal and professional realms, the process of planning and booking services can often be overwhelming.</Typography>
+          <Typography sx={{ fontSize:{xs:18,sm:21},mx:{xs:0,sm:6 }, mt:2}}>Event Management is a comprehensive platform aims to bridge this gap by offering a streamlined ecosystem that connects customers seeking event services with reliable and skilled service providers.</Typography>
+          <Typography sx={{ fontSize:{xs:18,sm:21},mx:{xs:0,sm:6 },mt:2}}>For customers, we provide a one-stop destination to discover and book, a wide range of services related to events like weddings, college farewells, birthdays, and conference meetings.</Typography>
+          <Typography sx={{ fontSize:{xs:18,sm:21},mx:{xs:0,sm:6 },mt:2,mb:20}}>On the other side, service providers have the opportunity to showcase their offerings to a diverse customer base. Through our platform, providers can efficiently add their services and view customer booking.</Typography>
         </div>
 
       </div>
