@@ -340,18 +340,26 @@ const ParameterForm = () => {
                                  name={item.Parameter} 
                                  checked={checkBoxData.length && checkBoxData[itemIndex+GoldenParameters.length][subItemIndex].ischecked}
                                  onChange={(e)=>{
+                                 
+                                  console.log(e.target.value)
                                   selectOneCheckbox(e,itemIndex+GoldenParameters.length,subItemIndex)
                                   const parameter={...data.AddOnsParameters[e.target.name],value:e.target.value};
                                 const parameterObject={...data.AddOnsParameters,[e.target.name]:parameter};
                                 console.log(parameterObject)
-                               setData({...data,AddOnsParameters:parameterObject})}}/>}
+                               setData({...data,AddOnsParameters:parameterObject})
+                               if(!e.target.checked)
+                                  {
+                                    const parameterObject={...data.AddOnsParameters,[e.target.name]:{value:"No"}};
+                                    console.log(parameterObject)
+                                   setData({...data,AddOnsParameters:parameterObject})
+                                  }}}/>}
                               label={subItem}
                             />
                           </Grid>
                         );
                       })}
                     </Grid>
-                    <TextField id="outlined-basic" label="Price" type="number" variant="outlined" fullWidth required={isRequired(itemIndex+GoldenParameters.length)}
+                    <TextField id="outlined-basic" label="Price" type="number" variant="outlined" fullWidth required={isRequired(itemIndex+GoldenParameters.length)} disabled={!isRequired(itemIndex+GoldenParameters.length)}
                     name={`${item.Parameter} price`}
                     onChange={(e)=>{
                       const parameter={...data.AddOnsParameters[item.Parameter],price:e.target.value};
