@@ -74,6 +74,7 @@ const ServiceFilter = () => {
       delete item.__v;
       delete item.Service;
       delete item.ServiceAddedBy;
+      // delete item.Location;
       return item;
        })
     setData(requiredResp);
@@ -146,11 +147,13 @@ getFilter(updatedCheckboxData);
         })
   }).map(item=>cloneDeep(item))
   console.log(filterData)
-  const finalData=filterData.map(item=>{
-    const keys={}
+  const keys={}
+  filterData.map(item=>{
+    
    Object.keys(item.AddOnsParameter).map(key=>{
+    keys[key]=false;
      filteredarray.map(subitem=>{
-          if(subitem.name!==key)
+          if(subitem.name===key)
           {
             keys[key]=true;
           }
@@ -158,16 +161,16 @@ getFilter(updatedCheckboxData);
       })
      
     })
-    console.log(keys)
-    Object.keys(keys).map(subkey=>{
-      if(!keys[subkey])
-      {
-           delete item.AddOnsParameter[subkey]
-      }
-    })
-    return item
-  }).map(item=>cloneDeep(item))
-  
+  })
+  console.log(keys)
+  let finalData=filterData.map(item=>cloneDeep(item));
+  console.log(finalData)
+  Object.keys(keys).map(subkey=>{
+    if(!keys[subkey])
+    {
+      finalData=finalData.map(({AddOnsParameter:{[subkey]:_,...rest},...obj})=>({...obj,AddOnsParameter:rest}))
+    }
+  })
   console.log(finalData)
   setFilteredData(finalData)
    }
