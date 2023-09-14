@@ -103,15 +103,18 @@ const SignUp = () => {
                             fullWidth
                             required
                             onChange={handleInput}
+                            
                         >
                             <MenuItem value="Service Provider">Service Provider</MenuItem>
                             <MenuItem value="Customer">Customer</MenuItem>
                         </Select>
-                        <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required   sx={{ mt: 2 }} name="Name" onChange={nameValid}  />
+                        <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required   sx={{ mt: 2 }} name="Name" onChange={nameValid} 
+                        inputProps={{ "data-testid": "name" }} />
                         {nameError && <span class="text-danger">Please Enter the Valid Name</span>}
-                        <TextField error={contactError} id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
+                        <TextField error={contactError} id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 , "data-testid": "contact" }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
                         {contactError && <span class="text-danger">Please Enter the Valid Contact Number</span>}
-                        <TextField error={emailError} id="outlined-basic" label="Enter Email" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Email" onChange={emailValid} />
+                        <TextField error={emailError} id="outlined-basic" label="Enter Email" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Email" onChange={emailValid}
+                         inputProps={{ "data-testid": "email" }}  />
                         {emailError && <span class="text-danger">Please Enter the Valid Email Id</span>}
                         <TextField
                             type={show ? "text" : "password"}
@@ -122,6 +125,7 @@ const SignUp = () => {
                             sx={{ mt: 2 }} name="Password" 
                             onChange={passwordValid}
                             InputProps={{
+                                "data-testid": "password",
                                 endAdornment:
                                     <InputAdornment position="end">
                                         <IconButton

@@ -26,7 +26,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "coverage":"npm test --coverage"
+  },
+  "jest":{
+    "transformIgnorePatterns":[
+      "node_modules/(?!axios)/"
+    ]
   },
   "eslintConfig": {
     "extends": [
