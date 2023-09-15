@@ -3,7 +3,7 @@ import Navbar from '../Navbar'
 import Footer from '../Footer'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-import { Checkbox, FormControlLabel, FormGroup, FormLabel, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, Checkbox, FormControlLabel, FormGroup, FormLabel, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import axios from 'axios';
 import TableComponent from '../TableComponent';
 import Form from './Form';
@@ -20,12 +20,14 @@ const ServiceFilter = () => {
     const [checkBoxData,setCheckBoxdata]=useState([])
     const [data,setData]=useState()
     const [filteredData, setFilteredData]=useState()
+    
     const [item,setItems]=useState()
+    const [msg,setMsg]=useState(false)
     // const [error,setError]=useState(false)
     // const [success,setSuccess]=useState(false)
     // const [initial,setInitial]=useState()
     const navigate=useNavigate("")
-    
+  
    
     
     console.log(service);
@@ -74,7 +76,7 @@ const ServiceFilter = () => {
       delete item.__v;
       delete item.Service;
       delete item.ServiceAddedBy;
-      // delete item.Location;
+      // delete item.Location.price;
       return item;
        })
     setData(requiredResp);
@@ -84,6 +86,11 @@ const ServiceFilter = () => {
         }}
       })();
     }, []);
+    const [serviceProviderLocation, setServiceProviderLocation]=useState("")
+    useEffect(()=>{
+      if(checkBoxData.length)
+     { getFilter(checkBoxData)}
+    },[serviceProviderLocation])
     console.log(GoldenParameters, AddOnsParameters);
     console.log(checkBoxData)
    const selectOneCheckbox=(e,divIndex,checkBoxIndex)=>
@@ -120,6 +127,7 @@ getFilter(updatedCheckboxData);
 
    }
    const getFilter=(checkBoxData)=>{
+   
     console.log(checkBoxData)
       const filter= checkBoxData.map(item=>{
  return item.filter(subItem=>{
@@ -132,10 +140,20 @@ getFilter(updatedCheckboxData);
    console.log(data)
    console.log(filter)
    const filteredarray=[].concat(...filter)
+   if(serviceProviderLocation)
+   {filteredarray.push({
+    name:"Location",
+    value:JSON.parse(serviceProviderLocation)
+   })}
    console.log(filteredarray)
   const filterData=data.filter(item=>{
     console.log(item)
         return filteredarray.every(filter=>{
+          if(!filter.type)
+          {
+            console.log(item.Location.value,filter.value.Name)
+          return  item.Location.value.Name==filter.value.Name
+          }
           if(filter.type=="GoldenParameter")
           {
           return  item.GoldenParameters[filter.name]==filter.value
@@ -149,8 +167,8 @@ getFilter(updatedCheckboxData);
   console.log(filterData)
   const keys={}
   filterData.map(item=>{
-    
-   Object.keys(item.AddOnsParameter).map(key=>{
+    if(item.AddOnsParameter)
+  { Object.keys(item.AddOnsParameter).map(key=>{
     keys[key]=false;
      filteredarray.map(subitem=>{
           if(subitem.name===key)
@@ -160,7 +178,7 @@ getFilter(updatedCheckboxData);
          
       })
      
-    })
+    })}
   })
   console.log(keys)
   let finalData=filterData.map(item=>cloneDeep(item));
@@ -174,6 +192,9 @@ getFilter(updatedCheckboxData);
   console.log(finalData)
   setFilteredData(finalData)
    }
+   const getBookedService =(index)=>{
+    console.log(filteredData[index])
+  }
   return (
     <div>
       <Navbar first="Home"  fourth="ViewBooking" path="/" />
@@ -189,11 +210,14 @@ getFilter(updatedCheckboxData);
                            name="Services"
                             labelId="demo-simple-select-label"
                             label="Select Locations"
-                          //  value={data.Location.Name}
-                          onChange={e=>console.log(JSON.parse(e.target.value))}
+                            displayEmpty
+                            value={serviceProviderLocation}
+                          onChange={e=>setServiceProviderLocation(e.target.value)
+                          }
                             required
                             sx={{width:"50%"}}
                         >
+                          <MenuItem value="">Select</MenuItem>
                           {locations && locations.map(item=>{
                             return <MenuItem value={JSON.stringify({Name:item.name,Latitude:item.latitude,Longitude:item.longitude})}>{item.name}</MenuItem>
                           })}
@@ -275,10 +299,13 @@ getFilter(updatedCheckboxData);
         </Grid>
         <Grid item xs={6} md={8} >
             <Typography variant="h4" sx={{mb:3,textAlign:"center"}}>{service} Services</Typography>
-           <Form item={item} locations={locations}/>
+           <Form item={item} setMsg={setMsg} locations={locations} service={service} filteredData={filteredData} setFilteredData={setFilteredData}/>
 
-          {filteredData && (filteredData.length ? <TableComponent data={filteredData}/>:
+          {filteredData && (filteredData.length ? <TableComponent data={filteredData} getBookedService={getBookedService}/>:
           <Typography variant="h5">No result found. Please try some different combination</Typography>)}
+          {msg && <Alert icon={false} severity="info" sx={{ fontSize: 16, fontWeight: "bold" }}>
+ {msg}
+</Alert>}
         </Grid>
        </Grid>}
        </div>

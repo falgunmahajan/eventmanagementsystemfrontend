@@ -61,7 +61,7 @@ const Navbar = (props) => {
             onClick={()=>navigate(`${props.path}`)}
             sx={{ flexGrow: 1, display: { xs: 'block' }, mx: { sm: 5 }, fontWeight: "bold",cursor:"pointer" }}
           >
-            Event Management
+            EventEase
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             {Object.keys(props).map((item) => (

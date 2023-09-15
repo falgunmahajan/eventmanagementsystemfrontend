@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, tableCellClasses } from '@mui/material';
+import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, tableCellClasses, Button } from '@mui/material';
 import React from 'react'
 
 const TableComponent = (props) => {
@@ -50,7 +50,29 @@ const TableComponent = (props) => {
             if(key=="Location")
             {
               return  <StyledTableCell align="center" key={key} >{item.Location.value.Name}
-              {(item.Location.price)&&   <div><br/><b>Price per km: </b> {item.Location.price}</div>}
+              {(item.Location.price && props.LocationPrice)&&   <div><br/><b>Price per km: </b> {item.Location.price}</div>}
+            </StyledTableCell>
+            }
+            if(key=="Action")
+            {
+              return  <StyledTableCell align="center" key={key} >
+                 <Button
+          variant="contained"
+          type="button"
+          size="large"
+          value={item[key]}
+          onClick={(e)=>props.getBookedService(e.target.value)}
+          // sx={{
+          //   backgroundColor: "#d23838",
+          //   "&:hover": { backgroundColor: "#d23838" },
+          //   m: 5,
+          //   textTransform: "none",
+          //   fontSize: 16,
+          // }}
+        
+        >
+          Book Service
+        </Button>
             </StyledTableCell>
             }
             if(typeof item[key]==="object")
