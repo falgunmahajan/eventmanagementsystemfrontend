@@ -111,7 +111,7 @@ const SignUp = () => {
                         <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required   sx={{ mt: 2 }} name="Name" onChange={nameValid} 
                         inputProps={{ "data-testid": "name" }} />
                         {nameError && <span class="text-danger">Please Enter the Valid Name</span>}
-                        <TextField error={contactError} type="number" id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 , "data-testid": "contact" }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
+                        <TextField error={contactError} type="tel" id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 , "data-testid": "contact" }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
                         {contactError && <span class="text-danger">Please Enter the Valid Contact Number</span>}
                         <TextField error={emailError} id="outlined-basic" label="Enter Email" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Email" onChange={emailValid}
                          inputProps={{ "data-testid": "email" }}  />

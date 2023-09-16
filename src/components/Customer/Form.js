@@ -14,27 +14,13 @@ import { getDistance } from "geolib";
 import React, { useEffect, useState } from "react";
 
 const Form = (props) => {
-  const [error, setError] = useState(false);
+ 
   const [diffDays, setDiffDays] = useState();
-  const object =
-    props.service == "Invitation Card" ||
-    props.service == "Mehndi Artist" ||
-    props.service == "Catering"
-      ? {
-          Location: "",
-          "Start Date": "",
-          "End Date": "",
-          Quantity: "",
-        }
-      : {
-          Location: "",
-          "Start Date": "",
-          "End Date": "",
-        };
-  const [formData, setFormData] = useState(object);
+  
   useEffect(() => {
     calculateDateDifference();
-  }, [formData["Start Date"], formData["End Date"]]);
+    handleSubmit()
+  }, [props.formData["Start Date"], props.formData["End Date"],props.formData.Location]);
   const title =
     props.service == "Invitation Card" ? "Number Of Cards" : "Number of People";
   const getDate = (value) => {
@@ -57,22 +43,22 @@ const Form = (props) => {
   };
   const handleChange = (name, value) => {
     console.log(name, value);
-    setFormData({ ...formData, [name]: value });
-    console.log(formData);
+    props.setFormData({ ...props.formData, [name]: value });
+    console.log(props.formData);
   };
   const calculateDateDifference = () => {
-    if (formData["End Date"] && formData["Start Date"]) {
+    if (props.formData["End Date"] && props.formData["Start Date"]) {
       console.log("some");
-      console.log(new Date(formData["End Date"]));
+      console.log(new Date(props.formData["End Date"]));
       const diff =
-        new Date(formData["End Date"]) - new Date(formData["Start Date"]);
+        new Date(props.formData["End Date"]) - new Date(props.formData["Start Date"]);
       const diffTime = Math.ceil(diff / (1000 * 60 * 60 * 24));
       console.log(diffDays);
       setDiffDays(diffTime);
       if (diffTime < 0) {
-        setError("End Date cannot be less than start date");
+        props.setError("End Date cannot be less than start date");
       } else {
-        setError(false);
+       props.setError(false);
       }
     }
   };
@@ -82,16 +68,17 @@ const Form = (props) => {
     );
   };
   const handleSubmit = () => {
-    const isFilled = Object.values(formData).every((value) => value !== "");
+    const isFilled = Object.values(props.formData).every((value) => value !== "");
     console.log(isFilled);
-    console.log(formData.Location.Latitude,formData.Location.Longitude)
+    console.log(props.formData.Location.Latitude,props.formData.Location.Longitude)
     if (isFilled) {
       if (props.filteredData) {
         props.setMsg(false);
+        
         const data = props.filteredData.map((obj,index) => {
           console.log(obj.Location.value.Latitude,obj.Location.value.Longitude)
           let total=Number(obj.GoldenParameters.Price)
-          let dist=calculateDistance({latitude:formData.Location.Latitude,longitude:formData.Location.Longitude},{latitude:obj.Location.value.Latitude,longitude:obj.Location.value.Longitude})
+          let dist=calculateDistance({latitude:props.formData.Location.Latitude,longitude:props.formData.Location.Longitude},{latitude:obj.Location.value.Latitude,longitude:obj.Location.value.Longitude})
           console.log(dist)
           if(obj.AddOnsParameter)
           {
@@ -103,12 +90,12 @@ const Form = (props) => {
     props.service == "Mehndi Artist" ||
     props.service == "Catering")
     {
-      total=total*Number(formData.Quantity)
+      total=total*Number(props.formData.Quantity)
     }
     total=total*(diffDays+1)+dist*obj.Location.price
         return ( {
           ...obj,
-          Total: total,
+          'Total Price': total,
           Action: index,
         })});
         props.setFilteredData(data);
@@ -122,10 +109,10 @@ const Form = (props) => {
       <form
         style={{ border: "1px solid black", padding: 20, marginBottom: 10 }}
       >
-        {error && (
+        {props.error && (
           <Grid item xs={12} md={10} sx={{ m: "auto" }}>
             <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>
-              {error}
+              {props.error}
             </Alert>
           </Grid>
         )}

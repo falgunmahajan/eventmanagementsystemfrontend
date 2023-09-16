@@ -1,11 +1,10 @@
-
 // import './App.css';
 
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 
-import { ThemeProvider } from "@emotion/react";
-import { theme } from "./Themes";
+// import { ThemeProvider } from "@emotion/react";
+// import { theme } from "./Themes";
 import Admin from "./components/Admin/Admin";
 import Dashboard from "./components/Admin/Dashboard";
 import Services from "./components/Admin/Services";
@@ -21,40 +20,59 @@ import ServiceProviderDashboard from "./components/Service Provider/ServiceProvi
 import ParameterForm from "./components/Service Provider/ParameterForm";
 import ServiceAdded from "./components/Service Provider/ServiceAdded";
 import ServiceFilter from "./components/Customer/ServiceFilter";
-
+import { useEffect, useState } from "react";
+import Booking from "./components/Customer/Booking";
 
 function App() {
+  const [bookedData, setBookedData] = useState();
+  useEffect(() => {
+    console.log(bookedData);
+  }, [bookedData]);
   return (
-    <ThemeProvider theme={theme}>
-   <Routes>
-    <Route path="/" >
-    <Route index element = {<Home/>}/>
-    <Route path="/SignUp" element={<SignUp/>}/>
-    <Route path="/SignIn" element={<SignIn/>}/>
+    // <ThemeProvider theme={theme}>
+    <Routes>
+      <Route path="/">
+        <Route index element={<Home />} />
+        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/SignIn" element={<SignIn />} />
       </Route>
       <Route path="/serviceProvider">
-      <Route index element ={<ServiceProviderDashboard/>}/> 
-      <Route path="services" element={<ParameterForm/>}/>
-      <Route path="ServicesAdded" element={<ServiceAdded/>}/>
+        <Route index element={<ServiceProviderDashboard />} />
+        <Route path="services" element={<ParameterForm />} />
+        <Route path="ServicesAdded" element={<ServiceAdded />} />
       </Route>
       <Route path="/customers">
-        <Route path="services" element={<ServiceFilter/>}/>
+        <Route
+          path="services"
+          element={
+            <ServiceFilter
+              bookedData={bookedData}
+              setBookedData={setBookedData}
+            />
+          }
+        />
+       
       </Route>
-    <Route path="/admin">
-      <Route index element ={<Admin/>}/>
-         <Route path="dashboard" element={<Dashboard />}>
-          <Route path="Services" element={<Services/>}/>
-          <Route path="Customer" element={<Customer />}/>
-          <Route path="ServiceProvider" element={<ServiceProvider />}/>
-          <Route path="BookedCustomer" element={<BookedCustomer />}/>
-          <Route path="AddServices" element={<AddServices/>}/>
-          <Route path="AddParameters" element={<AddParameters/>}/>
-          <Route path="AddOptions" element={<AddOptions/>}/>
-          </Route>
-    </Route>
-    
-   </Routes>
-   </ThemeProvider>
+      <Route
+            path="customers/services/booking"
+            element={
+              <Booking bookedData={bookedData} setBookedData={setBookedData} />
+            }
+          />
+      <Route path="/admin">
+        <Route index element={<Admin />} />
+        <Route path="dashboard" element={<Dashboard />}>
+          <Route path="Services" element={<Services />} />
+          <Route path="Customer" element={<Customer />} />
+          <Route path="ServiceProvider" element={<ServiceProvider />} />
+          <Route path="BookedCustomer" element={<BookedCustomer />} />
+          <Route path="AddServices" element={<AddServices />} />
+          <Route path="AddParameters" element={<AddParameters />} />
+          <Route path="AddOptions" element={<AddOptions />} />
+        </Route>
+      </Route>
+    </Routes>
+    //  </ThemeProvider>
   );
 }
 

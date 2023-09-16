@@ -1,29 +1,32 @@
-import styled from '@emotion/styled';
-import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, tableCellClasses, Button } from '@mui/material';
+
+
+import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, tableCellClasses, Button, styled } from '@mui/material';
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 const TableComponent = (props) => {
     let data=props.data
     console.log(data)
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-        [`&.${tableCellClasses.head}`]: {
-          backgroundColor: theme.palette.common.black,
-          color: theme.palette.common.white,
-        },
-        [`&.${tableCellClasses.body}`]: {
-          fontSize: 14,
-        },
-      }));
-      
-      const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
-          backgroundColor: theme.palette.action.hover,
-        },
-        // hide last border
-        '&:last-child td, &:last-child th': {
-          border: 0,
-        },
-      }));
+const navigate=useNavigate();
   return (
     <div>
       <TableContainer component={Paper}>
@@ -32,22 +35,24 @@ const TableComponent = (props) => {
           <TableRow>
             {Object.keys(data[0]).map(key=>{
               console.log(typeof data[0][key])
-              if(key!="Location" && typeof data[0][key]=="object")
+              if(key!=="ServiceAddedBy")
+             { if(key!="Location" && typeof data[0][key]=="object")
               {
                 return Object.keys(data[0][key]).map(subkey=>{
                 return  <StyledTableCell align="center" key={subkey}>{subkey.split(/(?=[A-Z])/).join(" ")}</StyledTableCell>
                 })
               }
                   return  <StyledTableCell align="center" key={key}>{key.split(/(?=[A-Z])/).join(" ")}</StyledTableCell>
-                })
-              } 
+}})}
+              
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map(item=>{
           return <StyledTableRow key={data.indexOf(item)}>
            {Object.keys(item).map(key=>{
-            if(key=="Location")
+            if(key!=="ServiceAddedBy")
+           { if(key=="Location")
             {
               return  <StyledTableCell align="center" key={key} >{item.Location.value.Name}
               {(item.Location.price && props.LocationPrice)&&   <div><br/><b>Price per km: </b> {item.Location.price}</div>}
@@ -61,7 +66,9 @@ const TableComponent = (props) => {
           type="button"
           size="large"
           value={item[key]}
-          onClick={(e)=>props.getBookedService(e.target.value)}
+          onClick={(e)=>{props.getBookedService(e.target.value);
+            navigate("/customers/services/booking")
+          }}
           // sx={{
           //   backgroundColor: "#d23838",
           //   "&:hover": { backgroundColor: "#d23838" },
@@ -91,7 +98,7 @@ const TableComponent = (props) => {
               })
             }
              return  <StyledTableCell align="center" key={key} >{item[key]}</StyledTableCell>
-            
+            }
             })}
             </StyledTableRow>
           })}

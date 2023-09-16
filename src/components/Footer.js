@@ -21,7 +21,7 @@ const Footer = () => {
                             <Typography sx={{ fontSize: 24, fontWeight: "bold", mb: 0.25 }}>Contact</Typography>
                             <Box sx={{ mb: 0.25 }}>
                                 <MailOutlineIcon sx={{ mr: 1 }} />
-                                eventmanagement@event.com
+                                eventease@event.com
                             </Box>
                             <Box>
                                 <PhoneIcon sx={{ mr: 1 }} />
