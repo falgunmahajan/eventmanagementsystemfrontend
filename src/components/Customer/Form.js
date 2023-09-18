@@ -16,6 +16,7 @@ import React, { useEffect, useState } from "react";
 const Form = (props) => {
  
   const [diffDays, setDiffDays] = useState();
+  const [error, setError] = useState(false);
   
   useEffect(() => {
     calculateDateDifference();
@@ -56,9 +57,9 @@ const Form = (props) => {
       console.log(diffDays);
       setDiffDays(diffTime);
       if (diffTime < 0) {
-        props.setError("End Date cannot be less than start date");
+        setError("End Date cannot be less than start date");
       } else {
-       props.setError(false);
+      setError(false);
       }
     }
   };
@@ -71,7 +72,8 @@ const Form = (props) => {
     const isFilled = Object.values(props.formData).every((value) => value !== "");
     console.log(isFilled);
     console.log(props.formData.Location.Latitude,props.formData.Location.Longitude)
-    if (isFilled) {
+    console.log(error)
+    if (isFilled && !error) {
       if (props.filteredData) {
         props.setMsg(false);
         
@@ -109,10 +111,10 @@ const Form = (props) => {
       <form
         style={{ border: "1px solid black", padding: 20, marginBottom: 10 }}
       >
-        {props.error && (
+        {error && (
           <Grid item xs={12} md={10} sx={{ m: "auto" }}>
             <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>
-              {props.error}
+              {error}
             </Alert>
           </Grid>
         )}

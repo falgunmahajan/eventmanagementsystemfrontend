@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import Box from "@mui/material/Box";
@@ -6,12 +6,31 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import { Grid, TextField } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Booking = ({ bookedData, setBookedData }) => {
+  const navigate=useNavigate()
   const [editNo, setEdit] = useState(false);
   const [contactError,setContactError]=useState(false)
+  const [open, setOpen] = useState(false);
+ const [msg,setMsg]=useState("")
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setBookedData()
+    navigate(`/`)
+
+  };
   const card = (
+    bookedData &&
     <React.Fragment>
       <CardContent>
         <Grid
@@ -120,10 +139,27 @@ const Booking = ({ bookedData, setBookedData }) => {
         setContactError(true)
     }
 }
-const handleSubmit=()=>{
+const handleSubmit=async()=>{
     if(!contactError)
     {
+       
+       try{
         console.log(bookedData)
+        delete bookedData.GoldenParameters.Price
+        Object.keys(bookedData.AddOnsParameter).map(key=>{
+         delete bookedData.AddOnsParameter[key].price
+        })
+        const res=await axios.post("/api/registerBookedCustomer",bookedData)
+        console.log(res.data)
+            setMsg(res.data.message)
+       }
+       catch(err)
+       {
+        console.log(err)
+        setMsg("Something went wrong")
+       }
+      handleClickOpen()
+        
     }
 }
   console.log(bookedData);
@@ -149,9 +185,26 @@ const handleSubmit=()=>{
         onChange={contactValid}
       />}
       {contactError && (
-        <span class="text-danger text-end" >Please Enter the Valid Contact Number</span>
+        <span className="text-danger text-end" >Please Enter the Valid Contact Number</span>
       )}
         <Button variant="contained" type="submit"  sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3,ml:"auto", textTransform: "none", fontSize: 16 }} onClick={handleSubmit}>Book Services</Button>
+        <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           {msg}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            Go Back
+          </Button>
+        </DialogActions>
+      </Dialog>
       </Box>
       </Box>
      

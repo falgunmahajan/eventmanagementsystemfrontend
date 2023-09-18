@@ -34,7 +34,12 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
 
   const [item, setItems] = useState();
   const [msg, setMsg] = useState(false);
-  const [error, setError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [errMsg,setErrMsg]=useState("")
+   const handleClose = () => {
+     setOpen(false);
+   };
+  
   // const [success,setSuccess]=useState(false)
   // const [initial,setInitial]=useState()
   const object =
@@ -240,11 +245,21 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
     console.log(finalData);
     setFilteredData(finalData);
   };
-  const getBookedService = (index) => {
-    if (!error) {
+  const getBookedService = async(index) => {
       console.log(filteredData[index]);
       setBookedData({...bookedData,...filteredData[index],...formData})
-    }
+      try {
+        const res=await axios.get(`/api/availableDates?service=${bookedData.Service}&serviceProviderId=${filteredData[index].ServiceAddedBy}&start=${formData['Start Date']}&end=${formData['End Date']}`)
+      
+        navigate("/customers/services/booking")
+      } catch (error) {
+        setErrMsg(error.response.data.message)
+       setOpen(true)
+      }
+   
+      
+     
+      
   };
   return (
     <div>
@@ -260,12 +275,12 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
             <Grid item xs={6} md={3} sx={{ px: "10px" }}>
               <Typography variant="h4">Filters</Typography>
               <InputLabel id="demo-simple-select-label" sx={{ mt: 2 }}>
-                Select Locations
+                Service Provider Locations
               </InputLabel>
               <Select
                 name="Services"
                 labelId="demo-simple-select-label"
-                label="Select Locations"
+                label="Service Provider Locations"
                 displayEmpty
                 value={serviceProviderLocation}
                 onChange={(e) => setServiceProviderLocation(e.target.value)}
@@ -393,8 +408,7 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
                 service={service}
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
-                error={error}
-                setError={setError}
+              
                 formData={formData}
                 setFormData={setFormData}
               />
@@ -404,6 +418,9 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
                   <TableComponent
                     data={filteredData}
                     getBookedService={getBookedService}
+                    handleClose={handleClose}
+                    errMsg={errMsg}
+                    open={open}
                   />
                 ) : (
                   <Typography variant="h5">

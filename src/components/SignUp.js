@@ -90,7 +90,7 @@ const SignUp = () => {
             <Grid container spacing={2}   >
                 <Grid item xs={8} md={4} sx={{ mx: "auto", my: 10, pb: 2, pr: 2, backgroundImage: `url(${image})`, backgroundSize: "cover" }}>
                     {error && <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>{error}</Alert>}
-                    <form onSubmit={handleSubmit}  className="bg-white p-4 w-100 my-2">
+                    <form onSubmit={handleSubmit}  classNameName="bg-white p-4 w-100 my-2">
                         <Typography variant="h3" component="div" sx={{ textAlign: "center",mb:2 }}>
                             Sign Up
                         </Typography>
@@ -110,12 +110,12 @@ const SignUp = () => {
                         </Select>
                         <TextField error={nameError} id="outlined-basic" label="Enter Name" variant="outlined" fullWidth required   sx={{ mt: 2 }} name="Name" onChange={nameValid} 
                         inputProps={{ "data-testid": "name" }} />
-                        {nameError && <span class="text-danger">Please Enter the Valid Name</span>}
+                        {nameError && <span className="text-danger">Please Enter the Valid Name</span>}
                         <TextField error={contactError} type="tel" id="outlined-basic" label="Enter Contact" variant="outlined" fullWidth required inputProps={{ maxLength: 10 , "data-testid": "contact" }} sx={{ mt: 2 }} name="Contact"  onChange={contactValid}/>
-                        {contactError && <span class="text-danger">Please Enter the Valid Contact Number</span>}
+                        {contactError && <span className="text-danger">Please Enter the Valid Contact Number</span>}
                         <TextField error={emailError} id="outlined-basic" label="Enter Email" variant="outlined" fullWidth required sx={{ mt: 2 }} name="Email" onChange={emailValid}
                          inputProps={{ "data-testid": "email" }}  />
-                        {emailError && <span class="text-danger">Please Enter the Valid Email Id</span>}
+                        {emailError && <span className="text-danger">Please Enter the Valid Email Id</span>}
                         <TextField
                             type={show ? "text" : "password"}
                             error={passwordError}
@@ -137,10 +137,10 @@ const SignUp = () => {
                                         </IconButton>
                                     </InputAdornment>
                             }} />
-                             {passwordError && <span class="text-danger">Password must be atleast 8 characters long</span>}
+                             {passwordError && <span className="text-danger">Password must be atleast 8 characters long</span>}
                         <Button variant="contained" type="submit" disabled={disabled()} fullWidth sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Sign Up</Button>
                     </form>
-                    <p className='text-white text-center mt-2'>If you have already registered please signin <br />
+                    <p classNameName='text-white text-center mt-2'>If you have already registered please signin <br />
                     <Link to="/SignIn" style={{color:"white", textDecoration:"none"}}>SignIn</Link>
                     </p>
                 </Grid>

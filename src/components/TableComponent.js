@@ -3,6 +3,10 @@
 import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, tableCellClasses, Button, styled } from '@mui/material';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -66,9 +70,7 @@ const navigate=useNavigate();
           type="button"
           size="large"
           value={item[key]}
-          onClick={(e)=>{props.getBookedService(e.target.value);
-            navigate("/customers/services/booking")
-          }}
+          onClick={(e)=>props.getBookedService(e.target.value)}
           // sx={{
           //   backgroundColor: "#d23838",
           //   "&:hover": { backgroundColor: "#d23838" },
@@ -80,6 +82,23 @@ const navigate=useNavigate();
         >
           Book Service
         </Button>
+      <Dialog
+        open={props.open}
+        onClose={props.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           {props.errMsg}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={props.handleClose} autoFocus>
+            ok
+          </Button>
+        </DialogActions>
+      </Dialog>
             </StyledTableCell>
             }
             if(typeof item[key]==="object")
