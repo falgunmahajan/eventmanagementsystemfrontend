@@ -22,6 +22,7 @@ import ServiceAdded from "./components/Service Provider/ServiceAdded";
 import ServiceFilter from "./components/Customer/ServiceFilter";
 import { useEffect, useState } from "react";
 import Booking from "./components/Customer/Booking";
+import ViewBooking from "./components/Customer/ViewBooking";
 
 function App() {
   const [bookedData, setBookedData] = useState();
@@ -51,7 +52,6 @@ function App() {
             />
           }
         />
-       
       </Route>
       <Route
             path="customers/services/booking"
@@ -59,6 +59,7 @@ function App() {
               <Booking bookedData={bookedData} setBookedData={setBookedData} />
             }
           />
+           <Route path="viewBooking" element={<ViewBooking/>}/>
       <Route path="/admin">
         <Route index element={<Admin />} />
         <Route path="dashboard" element={<Dashboard />}>

@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import {
   Alert,
+  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -19,6 +20,10 @@ import axios from "axios";
 import TableComponent from "../TableComponent";
 import Form from "./Form";
 import { cloneDeep } from "lodash";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 const ServiceFilter = ({ bookedData,setBookedData }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -418,9 +423,6 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
                   <TableComponent
                     data={filteredData}
                     getBookedService={getBookedService}
-                    handleClose={handleClose}
-                    errMsg={errMsg}
-                    open={open}
                   />
                 ) : (
                   <Typography variant="h5">
@@ -439,6 +441,23 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
             </Grid>
           </Grid>
         )}
+         <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           {errMsg}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            ok
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
       <Footer />
     </div>

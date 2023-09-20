@@ -47,7 +47,7 @@ const Home = () => {
         <Navbar first="Home" fourth="SignUp" fifth="SignIn" path="/" />
       }
       {login &&
-        <Navbar first="Home"  fourth="ViewBooking" path="/" />
+        <Navbar first="Home"  second="ViewBooking" path="/" />
       }
       <div className="d-flex align-items-center justify-content-center text-white flex-column" style={{ backgroundImage: `url(${image})`, backgroundSize: "cover", height: '70vh' }}>
         <Typography variant="h2" sx={{ typography: { md: 'h2', xs: 'h5' } }}>Welcome to Event Management</Typography>
