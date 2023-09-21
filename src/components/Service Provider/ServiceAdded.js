@@ -11,6 +11,7 @@ const ServiceAdded = () => {
     const navigate=useNavigate();
 const [data,setData]=useState()
 const[loading,setLoading]=useState(true)
+const [login,setLogin]=useState(false)
 useEffect(()=>{
 (async()=>{
     let user;
@@ -24,6 +25,7 @@ useEffect(()=>{
       navigate("/");
     } else {
       if (user.data.validUser.Role == "Service Provider") {
+        setLogin(true)
         console.log(user.data.validUser._id)
         const res = await axios.get(`/api/getServiceData?id=${user.data.validUser._id}`);
         console.log(res.data);
@@ -43,7 +45,7 @@ useEffect(()=>{
       }
     }
 })();
-},[])
+},[login])
   return (
     <div>
       <Navbar
@@ -51,6 +53,8 @@ useEffect(()=>{
         second="ViewBooking"
         third="ServicesAdded"
         path="/serviceProvider/"
+        Login={true}
+        setLogin={setLogin}
       />
     
        <div style={{minHeight:"75vh"}}>

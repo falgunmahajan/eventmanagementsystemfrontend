@@ -14,6 +14,7 @@ export default function Dashboard() {
     const [customer, setCustomer] = useState("")
     const [serviceprovider, setServiceProvider] = useState("")
     const [bookedCustomer, setbookedCustomer] = useState("")
+    const [login,setLogin]=useState(false)
     const navigate = useNavigate();
     useEffect(() => {
         (async () => {
@@ -32,6 +33,7 @@ export default function Dashboard() {
             else{
                 if(user.data.validUser.Role=="Admin")
                 {
+                    setLogin(true)
                 const res1 = await axios.get("/api/getService")
                 setServices(res1.data)
                 const res2 = await axios.get("/api/getCustomer")
@@ -50,10 +52,10 @@ export default function Dashboard() {
             
 
         })();
-    },[])
+    },[login])
     return (
         <div>
-            <Navbar first="Services" second="Customer" third="ServiceProvider" fourth="BookedCustomer" path="/admin/dashboard/" />
+            <Navbar first="Services" second="Customer" third="ServiceProvider" fourth="BookedCustomer" path="/admin/dashboard/" Login={true} setLogin={setLogin}/>
             <Grid container spacing={1} sx={{ my: 4, minHeight: "70vh" }}>
                 <Grid item sm={3} lg={2} sx={{ display: { xs: "none", sm: "block" }, mx: 5, borderRight: 1, borderColor: 'divider' }}>
                     <Link to="/admin/dashboard/Services" style={{ color: "black", fontSize: 17, textDecoration: "none" }}>Service Categories</Link><br /><br />

@@ -10,6 +10,7 @@ const ServiceProviderDashboard = () => {
   const navigate = useNavigate();
   const[loading,setLoading]=useState(true)
   const [services, setServices] = useState("");
+  const [login,setLogin]=useState(false)
   useEffect(() => {
     (async () => {
       let user;
@@ -23,6 +24,7 @@ const ServiceProviderDashboard = () => {
         navigate("/");
       } else {
         if (user.data.validUser.Role == "Service Provider") {
+          setLogin(true)
           const res1 = await axios.get("/api/getService");
           console.log(res1);
           setServices(res1.data);
@@ -33,7 +35,7 @@ const ServiceProviderDashboard = () => {
         }
       }
     })();
-  }, []);
+  }, [login]);
   return (
     <div>
       <Navbar
@@ -41,6 +43,8 @@ const ServiceProviderDashboard = () => {
         second="ViewBooking"
         third="ServicesAdded"
         path="/serviceProvider/"
+        Login={true}
+        setLogin={setLogin}
       />
        <div style={{textAlign:"center",marginTop:100}}>
        <ClipLoader  loading={loading} />

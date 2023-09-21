@@ -29,6 +29,7 @@ const ParameterForm = () => {
   const [error,setError]=useState(false)
   const [success,setSuccess]=useState(false)
   const [initial,setInitial]=useState()
+  const [login,setLogin]=useState(false)
   const [data,setData]=useState({
     Service:"",
     ServiceProviderName:"",
@@ -62,6 +63,7 @@ const ParameterForm = () => {
         navigate("/");
       } else {
         if (user.data.validUser.Role == "Service Provider") {
+          setLogin(true)
       const res = await axios.get(`/api/getServiceOptions?service=${service}`);
       const {GoldenParameter,AddOnsParameter}=res.data;
       console.log(GoldenParameter,AddOnsParameter)
@@ -101,7 +103,7 @@ const ParameterForm = () => {
         navigate("/");
       }}
     })();
-  }, []);
+  }, [login]);
   console.log(GoldenParameters, AddOnsParameters);
   console.log(checkBoxData)
   console.log(data)
@@ -209,7 +211,8 @@ const ParameterForm = () => {
   return (
     <div>
      
-      <Navbar first="Home" second="ViewBooking" third="ServicesAdded" path="/serviceProvider/" />
+      <Navbar first="Home" second="ViewBooking" third="ServicesAdded" path="/serviceProvider/" 
+        Login={true} setLogin={setLogin}/>
       <div style={{ textAlign: "center", marginTop: 30 }}>
         <ClipLoader loading={loading} />
       </div>

@@ -27,7 +27,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 const ServiceFilter = ({ bookedData,setBookedData }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [dataLoading, setDataLoading] = useState(false);
+  const [login, setLogin] = useState(false);
   const service = searchParams.get("service");
   const [GoldenParameters, setGoldenParameters] = useState("");
   const [AddOnsParameters, setAddOnsParameters] = useState("");
@@ -82,6 +82,7 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
         navigate("/");
       } else {
         if (user.data.validUser.Role == "Customer") {
+          setLogin(true)
           console.log(user.data.validUser);
           setBookedData({
             ...bookedData,
@@ -146,7 +147,7 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
         }
       }
     })();
-  }, []);
+  }, [login]);
   const [serviceProviderLocation, setServiceProviderLocation] = useState("");
   useEffect(() => {
     if (checkBoxData.length) {
@@ -268,7 +269,7 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
   };
   return (
     <div>
-      <Navbar first="Home" fourth="ViewBooking" path="/" />
+      <Navbar first="Home" fourth="ViewBooking" path="/" Login={true} setLogin={setLogin} />
       {loading && (
         <div style={{ textAlign: "center", marginTop: 100 }}>
           <ClipLoader loading={loading} />

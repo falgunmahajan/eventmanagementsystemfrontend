@@ -20,8 +20,11 @@ const Form = (props) => {
   
   useEffect(() => {
     calculateDateDifference();
-    handleSubmit()
   }, [props.formData["Start Date"], props.formData["End Date"],props.formData.Location]);
+  useEffect(()=>{
+    if(diffDays && !error)
+    handleSubmit()
+  },[diffDays,error])
   const title =
     props.service == "Invitation Card" ? "Number Of Cards" : "Number of People";
   const getDate = (value) => {
@@ -64,6 +67,7 @@ const Form = (props) => {
     }
   };
   const calculateDistance = (customerCoordinates, serviceProviderCoordinates) => {
+    
     return Math.trunc(
       getDistance(customerCoordinates, serviceProviderCoordinates) / 1000
     );
@@ -78,14 +82,17 @@ const Form = (props) => {
         props.setMsg(false);
         
         const data = props.filteredData.map((obj,index) => {
+          console.log("Object:",obj)
           console.log(obj.Location.value.Latitude,obj.Location.value.Longitude)
           let total=Number(obj.GoldenParameters.Price)
+          console.log(total)
           let dist=calculateDistance({latitude:props.formData.Location.Latitude,longitude:props.formData.Location.Longitude},{latitude:obj.Location.value.Latitude,longitude:obj.Location.value.Longitude})
           console.log(dist)
           if(obj.AddOnsParameter)
           {
             Object.keys(obj.AddOnsParameter).map(item=>{
              total+=Number(obj.AddOnsParameter[item].price)
+             console.log(total)
             })
           }
          if( props.service == "Invitation Card" ||
@@ -93,8 +100,11 @@ const Form = (props) => {
     props.service == "Catering")
     {
       total=total*Number(props.formData.Quantity)
+      console.log(total)
     }
-    total=total*(diffDays+1)+dist*obj.Location.price
+    console.log(diffDays,dist)
+    total=total*(diffDays+1)+dist*Number(obj.Location.price)
+    console.log(total)
         return ( {
           ...obj,
           'Total Price': total,

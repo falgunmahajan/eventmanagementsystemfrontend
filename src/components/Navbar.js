@@ -3,6 +3,7 @@ import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, List, Li
 import React, { useState } from 'react'
 import image from "../Images/footerBackground.jpeg"
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const drawerWidth = 240;
 
 // const navItems = ['Home', 'About', 'Contact'];
@@ -68,13 +69,19 @@ const Navbar = (props) => {
               (props[item]=="Home")? <Button key={item}  sx={{ color: '#fff' }} onClick={()=>navigate(`${props.path}`)}>
               {props[item]}
             </Button>:
-                (item!=="path") && 
+                (item!=="path" && item!=="setLogin") && ((item==="Login")?  <Button  sx={{ color: '#fff' }} onClick={async()=>
+                  { await axios.get("/api/signout");
+                   props.setLogin(false)
+               }
+                 }>
+                 SignOut
+               </Button>  :
                <Button key={item}  sx={{ color: '#fff' }} onClick={()=>navigate(`${props.path}${(props[item])}`)}>
                  {props[item]}
-               </Button>
+               </Button>  )
             )
-              
             )}
+           
           </Box>
         </Toolbar>
       </AppBar>
