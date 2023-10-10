@@ -62,7 +62,7 @@ const Home = () => {
        
           {services && services.map(item => {
             return <Grid item xs={12} sm={6} lg={3} sx={{px:{xs:0,sm:5}}}>
-              <CardComponent width={300} imgSrc={`http://localhost:8080/${item.ImageUrl}`} title={item.Service} path={path}  />
+              <CardComponent width={300} imgSrc={`https://eventeasebackend.onrender.com/${item.ImageUrl}`} title={item.Service} path={path}  />
             </Grid>
           })}
 
