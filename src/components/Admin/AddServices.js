@@ -2,6 +2,7 @@ import { Alert, Button, Grid, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import image from "../../Images/footerBackground.jpeg"
 import axios from 'axios';
+import { baseUrl } from '../../baseUrl';
 const AddServices = () => {
     const [service, setService] = useState("");
     const [imageFile,setImageFile]=useState([])
@@ -14,7 +15,7 @@ const formData=new FormData();
 formData.append("Service",service)
 formData.append("Image",imageFile)
 try{
-  const res=await axios.post("/api/addServices",formData)
+  const res=await axios.post(`${baseUrl}/api/addServices`,formData)
   setError(false)
   setSuccess("Your Services is successfully added")
   setService("")

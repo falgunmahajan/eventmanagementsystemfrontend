@@ -9,6 +9,7 @@ import customers from "../../Images/customers.png"
 import serviceProvider from "../../Images/serviceprovider.jpg"
 import bookedService from "../../Images/bookservice.jpg"
 import axios from 'axios'
+import { baseUrl } from '../../baseUrl'
 export default function Dashboard() {
     const [services, setServices] = useState("")
     const [customer, setCustomer] = useState("")
@@ -19,8 +20,9 @@ export default function Dashboard() {
     useEffect(() => {
         (async () => {
             let user;
+            let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
             try {
-                user = await axios.get("/api/validUser")
+                user = await axios.get(`${baseUrl}/api/validUser/${token}`)
                 console.log(user.data)
             }
             catch (err) {
@@ -34,13 +36,13 @@ export default function Dashboard() {
                 if(user.data.validUser.Role=="Admin")
                 {
                     setLogin(true)
-                const res1 = await axios.get("/api/getService")
+                const res1 = await axios.get(`${baseUrl}/api/getService`)
                 setServices(res1.data)
-                const res2 = await axios.get("/api/getCustomer")
+                const res2 = await axios.get(`${baseUrl}/api/getCustomer`)
                 setCustomer(res2.data)
-                const res3 = await axios.get("/api/getServiceProvider")
+                const res3 = await axios.get(`${baseUrl}/api/getServiceProvider`)
                 setServiceProvider(res3.data)
-                const res4 = await axios.get("/api/getBookedCustomer")
+                const res4 = await axios.get(`${baseUrl}/api/getBookedCustomer`)
                 setbookedCustomer(res4.data)
                 }
                 else{

@@ -3,6 +3,7 @@ import image from "../../Images/footerBackground.jpeg"
 import { Alert, Button, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import axios from 'axios'
 import { Add } from '@mui/icons-material'
+import { baseUrl } from '../../baseUrl'
 
 const AddParameters = () => {
   const [parameters,setParameters]=useState({
@@ -18,7 +19,7 @@ const AddParameters = () => {
   useEffect(()=>{
    ( async()=>{
     
-    const res1 = await axios.get("/api/getService")
+    const res1 = await axios.get(`${baseUrl}/api/getService`)
     console.log(res1.data)
     setServices(res1.data)
    })()
@@ -38,7 +39,7 @@ const handleSubmit=async(e)=>{
   console.log(inputField)
   console.log(parameters)
   try{
-    const res=await axios.post("/api/addParameters",parameters);
+    const res=await axios.post(`${baseUrl}/api/addParameters`,parameters);
     console.log(res.data)
     setError(false)
     setSuccess("Your Services is successfully added")

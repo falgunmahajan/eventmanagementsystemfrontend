@@ -6,6 +6,7 @@ import { Grid, Typography } from '@mui/material';
 import CardComponent from './CardComponent';
 import Footer from './Footer';
 import { ClipLoader } from 'react-spinners';
+import { baseUrl } from '../baseUrl';
 const Home = () => {
   const [login, setLogin] = useState(false);
   const [services, setServices] = useState("");
@@ -13,13 +14,15 @@ const Home = () => {
   const path=login?"/customers/services":"/SignIn"
   useEffect(() => {
     (async () => {
-      const res1 = await axios.get("/api/getService")
+      const res1 = await axios.get(`${baseUrl}/api/getService`)
       console.log(res1)
       setServices(res1.data)
       setLoading(false)
       let user;
-            try {
-                user = await axios.get("/api/validUser")
+      let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
+      try {
+          user = await axios.get(`${baseUrl}/api/validUser/${token}`)
+           
                 console.log(user.data)
             }
             catch (err) {
@@ -62,7 +65,7 @@ const Home = () => {
        
           {services && services.map(item => {
             return <Grid item xs={12} sm={6} lg={3} sx={{px:{xs:0,sm:5}}}>
-              <CardComponent width={300} imgSrc={`https://eventeasebackend.onrender.com/${item.ImageUrl}`} title={item.Service} path={path}  />
+              <CardComponent width={300} imgSrc={`${baseUrl}/${item.ImageUrl}`} title={item.Service} path={path}  />
             </Grid>
           })}
 
@@ -77,8 +80,9 @@ const Home = () => {
         </div>
 
       </div>
-
-
+      <div id="About" style={{ marginTop: 40 , marginBottom:40}}>
+      <iframe style={{background: "#F1F5F4",border: "none",borderRadius: "2px",boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2)",width: "100vw",height: "100vh"}} src="https://charts.mongodb.com/charts-event-based-services-book-efbvz/embed/dashboards?id=c0f84884-c5c3-4551-80ac-7aaa6485a616&theme=light&autoRefresh=true&maxDataAge=3600&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed"></iframe>
+      </div>
       <Footer />
     </div>
   )

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import image from "../Images/footerBackground.jpeg"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { baseUrl } from '../baseUrl';
 const drawerWidth = 240;
 
 // const navItems = ['Home', 'About', 'Contact'];
@@ -70,7 +71,7 @@ const Navbar = (props) => {
               {props[item]}
             </Button>:
                 (item!=="path" && item!=="setLogin") && ((item==="Login")?  <Button  sx={{ color: '#fff' }} onClick={async()=>
-                  { await axios.get("/api/signout");
+                  { localStorage.removeItem("user");
                    props.setLogin(false)
                }
                  }>

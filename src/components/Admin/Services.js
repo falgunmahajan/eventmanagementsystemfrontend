@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import TableComponent from '../TableComponent';
 import { Typography } from '@mui/material';
 import { ClipLoader } from 'react-spinners';
+import { baseUrl } from '../../baseUrl';
 
 const Services = () => {
     const [service,setService]=useState("");
     const[loading,setLoading]=useState(true);
     useEffect(()=>{
        (async()=>{
-        const res = await axios.get("/api/getService")
+        const res = await axios.get(`${baseUrl}/api/getService`)
        let data= (res.data).map(item=>{
               delete item._id;
               delete item.__v;

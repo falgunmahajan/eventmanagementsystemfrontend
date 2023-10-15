@@ -26,11 +26,8 @@ import ViewBooking from "./components/Customer/ViewBooking";
 import Details from "./components/Details";
 import ServiceProviderViewBooking from "./components/Service Provider/ServiceProviderViewBooking";
 
+
 function App() {
-  const [bookedData, setBookedData] = useState();
-  useEffect(() => {
-    console.log(bookedData);
-  }, [bookedData]);
   return (
     // <ThemeProvider theme={theme}>
     <Routes>
@@ -44,30 +41,27 @@ function App() {
         <Route path="services" element={<ParameterForm />} />
         <Route path="ServicesAdded" element={<ServiceAdded />} />
         <Route path="ViewBooking" >
-        <Route index element={<ServiceProviderViewBooking setBookedData={setBookedData}/>}/>
-        <Route path="details" element={<Details bookedData={bookedData} role="Service Provider"/>}/>
+        <Route index element={<ServiceProviderViewBooking />}/>
+        <Route path="details" element={<Details  role="Service Provider"/>}/>
         </Route>
       </Route>
       <Route path="/customers">
         <Route
           path="services"
           element={
-            <ServiceFilter
-              bookedData={bookedData}
-              setBookedData={setBookedData}
-            />
+            <ServiceFilter/>
           }
         />
       </Route>
       <Route
             path="customers/services/booking"
             element={
-              <Booking bookedData={bookedData} setBookedData={setBookedData} />
+              <Booking />
             }
           />
            <Route path="viewBooking">
-            <Route index element={<ViewBooking setBookedData={setBookedData} />}/>
-            <Route path="details" element={<Details bookedData={bookedData} role="Customer" />}/>
+            <Route index element={<ViewBooking />}/>
+            <Route path="details" element={<Details role="Customer" />}/>
            </Route>
       <Route path="/admin">
         <Route index element={<Admin />} />
@@ -81,6 +75,7 @@ function App() {
           <Route path="AddOptions" element={<AddOptions />} />
         </Route>
       </Route>
+      
     </Routes>
     //  </ThemeProvider>
   );

@@ -7,6 +7,7 @@ import { Grid } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from '../../baseUrl'
 export default function Admin() {
   const navigate=useNavigate();
   const [user, setUser] = useState({});
@@ -25,8 +26,9 @@ const handleSubmit = async (e) => {
  console.log(user)
 
   try {
-      const res = await axios.post("/api/login",user);
+      const res = await axios.post(`${baseUrl}/api/login`,user);
       const data = await res.data
+      localStorage.setItem("user",JSON.stringify(data))
       console.log(data)
       setError(false)
       navigate("/admin/dashboard")

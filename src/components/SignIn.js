@@ -6,6 +6,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Footer from './Footer'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { baseUrl } from '../baseUrl'
 
 const SignIn = () => {
     const navigate=useNavigate();
@@ -25,8 +26,9 @@ const SignIn = () => {
    console.log(user)
   
     try {
-        const res = await axios.post("/api/login",user);
+        const res = await axios.post(`${baseUrl}/api/login`,user);
         const data = await res.data
+        localStorage.setItem("user",JSON.stringify(data))
         console.log(data)
         setError(false);
         (data.user.Role=="Customer")? navigate("/"):navigate("/serviceProvider")

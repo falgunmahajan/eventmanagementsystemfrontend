@@ -3,13 +3,14 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners';
 import TableComponent from '../TableComponent';
+import { baseUrl } from '../../baseUrl';
 
 const ServiceProvider = () => {
     const [serviceProvider,setServiceProvider]=useState("");
     const[loading,setLoading]=useState(true);
     useEffect(()=>{
        (async()=>{
-        const res = await axios.get("/api/getServiceProvider")
+        const res = await axios.get(`${baseUrl}/api/getServiceProvider`)
        let data= (res.data).map(item=>{
               delete item._id;
               delete item.__v;

@@ -13,9 +13,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { Grid, TextField } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../../baseUrl";
 
-const Booking = ({ bookedData, setBookedData }) => {
+const Booking = () => {
   const navigate=useNavigate()
+  const data=JSON.parse(localStorage.getItem("bookedData"))
+  const [bookedData,setBookedData]=useState(data)
   const [editNo, setEdit] = useState(false);
   const [contactError,setContactError]=useState(false)
   const [open, setOpen] = useState(false);
@@ -25,7 +28,6 @@ const Booking = ({ bookedData, setBookedData }) => {
   };
 
   const handleClose = () => {
-    setBookedData()
     navigate(`/`)
 
   };
@@ -139,33 +141,92 @@ const Booking = ({ bookedData, setBookedData }) => {
         setContactError(true)
     }
 }
+const loadScript=(src)=>{
+  return new Promise((resolve)=>{
+    const script=document.createElement("script")
+    script.src=src;
+    
+    script.onload=()=>{
+      resolve(true)
+    }
+    script.onerror=()=>{
+      resolve(false)
+    }
+    document.body.appendChild(script)
+  })
+}
 const handleSubmit=async()=>{
     if(!contactError)
     {
+      const res=await loadScript("https://checkout.razorpay.com/v1/checkout.js")
+    if(!res)
+    {
+      alert("Failed to load razorpay sdk")
+      return
+    }
+    delete bookedData.GoldenParameters.Price
+      bookedData.AddOnsParameter && Object.keys(bookedData.AddOnsParameter).map(key=>{
+       delete bookedData.AddOnsParameter[key].price
+      })
+    const resp = await axios.post(`${baseUrl}/razorpay`,bookedData)
+    const data=resp.data
+    console.log(data)
+    var options = {
+      "key": data.key,
+      "amount": data.amount, 
+      "currency": data.currency,
+      "name": "EventEase", 
+      "description": "Thank You for booking the service",
+      
+      "order_id":data.id, 
+      // "callback_url": `${baseUrl}/paymentVerification?data=${(JSON.stringify(bookedData))}`,
+      "handler":async (response)=>{
+        try {
+          const {data}=await axios.post(`${baseUrl}/paymentVerification`,{
+            data:bookedData,
+            orderDetails:response
+          })
+          console.log(data.message)
+          setMsg(data.message)
+          localStorage.removeItem("bookedData")
+        } catch (error) {
+          setMsg(error.response.data.message)
+          console.log(error.response.data.message)
+        }
+        handleClickOpen()
+    },
+      "prefill": { 
+          "name": bookedData.CustomerName,  
+          "contact": bookedData.CustomerContact 
+      }
+  };
+  var paymentObject = new window. Razorpay(options);
+  paymentObject.open()
+
        
-       try{
-        console.log(bookedData)
-        delete bookedData.GoldenParameters.Price
-        Object.keys(bookedData.AddOnsParameter).map(key=>{
-         delete bookedData.AddOnsParameter[key].price
-        })
-        const res=await axios.post("/api/registerBookedCustomer",bookedData)
-        console.log(res.data)
-            setMsg(res.data.message)
-       }
-       catch(err)
-       {
-        console.log(err)
-        setMsg("Something went wrong")
-       }
-      handleClickOpen()
+      //  try{
+      //   console.log(bookedData)
+      //   delete bookedData.GoldenParameters.Price
+      //   Object.keys(bookedData.AddOnsParameter).map(key=>{
+      //    delete bookedData.AddOnsParameter[key].price
+      //   })
+      //   const res=await axios.post(`${baseUrl}/api/registerBookedCustomer`,bookedData)
+      //   console.log(res.data)
+      //       setMsg(res.data.message)
+      //  }
+      //  catch(err)
+      //  {
+      //   console.log(err)
+      //   setMsg("Something went wrong")
+      //  }
+      // handleClickOpen()
         
     }
 }
   console.log(bookedData);
   return (
     <div>
-      <Navbar first="Home" fourth="ViewBooking" path="/" />
+      <Navbar first="Home" second="ViewBooking" path="/" />
       <Box sx={{ width: "50%", p: 5, minHeight: "75vh", mx: "auto", my: 8 }}>
         <Card variant="outlined" sx={{ border: 1, borderColor: "divider" }}>
           {card}

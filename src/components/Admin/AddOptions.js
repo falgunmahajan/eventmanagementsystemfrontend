@@ -3,6 +3,7 @@ import { Alert, Button, Grid, InputLabel, MenuItem, Select, TextField, Typograph
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import image from "../../Images/footerBackground.jpeg"
+import { baseUrl } from '../../baseUrl';
 
 const AddOptions = () => {
   const [inputField,setInputField]=useState([0])
@@ -19,7 +20,7 @@ const AddOptions = () => {
   useEffect(()=>{
     ( async()=>{
      
-     const res1 = await axios.get("/api/getService")
+     const res1 = await axios.get(`${baseUrl}/api/getService`)
      console.log(res1.data)
      setServices(res1.data)
     })()
@@ -29,7 +30,7 @@ const AddOptions = () => {
     if(options.Services && options.TypeOfParameter)
     {
       console.log("hello")
-      const res = await axios.get(`/api/getParameters?Service=${options.Services}&TypeOfParameter=${options.TypeOfParameter}`)
+      const res = await axios.get(`${baseUrl}/api/getParameters?Service=${options.Services}&TypeOfParameter=${options.TypeOfParameter}`)
      setParameters(res.data)
    }
   }
@@ -39,7 +40,7 @@ const AddOptions = () => {
     console.log(options)
     try{
       
-    const res= await axios.post("/api/addOptions",options)
+    const res= await axios.post(`${baseUrl}/api/addOptions`,options)
     console.log(res.data)
       setError(false)
       setSuccess("Your Services is successfully added")

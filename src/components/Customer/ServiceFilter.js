@@ -24,7 +24,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-const ServiceFilter = ({ bookedData,setBookedData }) => {
+import { baseUrl } from "../../baseUrl";
+const ServiceFilter = () => {
+  const [bookedData, setBookedData] = useState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [login, setLogin] = useState(false);
@@ -69,8 +71,9 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
   useEffect(() => {
     (async () => {
       let user;
+      let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
       try {
-        user = await axios.get("/api/validUser");
+          user = await axios.get(`${baseUrl}/api/validUser/${token}`)
         console.log(user.data);
         console.log(service);
         // const userData = user.data.validUser;
@@ -92,14 +95,14 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
             CustomerContact:user.data.validUser.Contact,
           });
           const res = await axios.get(
-            `/api/getServiceOptions?service=${service}`
+            `${baseUrl}/api/getServiceOptions?service=${service}`
           );
           const { GoldenParameter, AddOnsParameter } = res.data;
           console.log(GoldenParameter, AddOnsParameter);
           setGoldenParameters(GoldenParameter);
           setAddOnsParameters(AddOnsParameter);
           setLoading(false);
-          const response = await axios.get("/api/getLocations");
+          const response = await axios.get(`${baseUrl}/api/getLocations`);
           setLocations(response.data);
           console.log(response.data);
           const GoldenArray =
@@ -131,7 +134,7 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
           setCheckBoxdata([...initialState]);
           //   setInitial([...initialState])
           const resp = await axios.get(
-            `/api/getServiceData?service=${service}`
+            `${baseUrl}/api/getServiceData?service=${service}`
           );
           const requiredResp = resp.data.map((item) => {
             delete item._id;
@@ -154,6 +157,13 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
       getFilter(checkBoxData);
     }
   }, [serviceProviderLocation]);
+  useEffect(()=>{
+    if(bookedData)
+    {
+      localStorage.setItem("bookedData",JSON.stringify(bookedData))
+    }
+    
+  },[bookedData])
   console.log(GoldenParameters, AddOnsParameters);
   console.log(checkBoxData);
   const selectOneCheckbox = (e, divIndex, checkBoxIndex) => {
@@ -254,8 +264,9 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
   const getBookedService = async(index) => {
       console.log(filteredData[index]);
       setBookedData({...bookedData,...filteredData[index],...formData})
+     
       try {
-        const res=await axios.get(`/api/availableDates?service=${bookedData.Service}&serviceProviderId=${filteredData[index].ServiceAddedBy}&start=${formData['Start Date']}&end=${formData['End Date']}`)
+        const res=await axios.get(`${baseUrl}/api/availableDates?service=${bookedData.Service}&serviceProviderId=${filteredData[index].ServiceAddedBy}&start=${formData['Start Date']}&end=${formData['End Date']}`)
       
         navigate("/customers/services/booking")
       } catch (error) {
@@ -264,12 +275,12 @@ const ServiceFilter = ({ bookedData,setBookedData }) => {
       }
    
       
-     
+      
       
   };
   return (
     <div>
-      <Navbar first="Home" fourth="ViewBooking" path="/" Login={true} setLogin={setLogin} />
+      <Navbar first="Home" second="ViewBooking" path="/" Login={true} setLogin={setLogin} />
       {loading && (
         <div style={{ textAlign: "center", marginTop: 100 }}>
           <ClipLoader loading={loading} />

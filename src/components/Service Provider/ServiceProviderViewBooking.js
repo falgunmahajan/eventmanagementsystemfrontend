@@ -7,8 +7,9 @@ import { Grid, Typography } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import TableComponent from "../TableComponent";
 import { cloneDeep } from "lodash";
+import { baseUrl } from "../../baseUrl";
 
-const ServiceProviderViewBooking = ({setBookedData}) => {
+const ServiceProviderViewBooking = () => {
     const navigate = useNavigate();
     const [originalData, setOriginalData] = useState();
     const [data, setData] = useState();
@@ -17,8 +18,10 @@ const ServiceProviderViewBooking = ({setBookedData}) => {
     useEffect(() => {
       (async () => {
         let user;
+        let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
         try {
-          user = await axios.get("/api/validUser");
+            user = await axios.get(`${baseUrl}/api/validUser/${token}`)
+       
           console.log(user.data);
         } catch (err) {
           user = "";
@@ -30,7 +33,7 @@ const ServiceProviderViewBooking = ({setBookedData}) => {
             setLogin(true)
             console.log(user.data.validUser._id);
             const res = await axios.get(
-              `/api/getBookedData/${user.data.validUser._id}`
+              `${baseUrl}/api/getBookedData/${user.data.validUser._id}`
             );
             console.log(res.data);
             setOriginalData(res.data);
@@ -57,7 +60,8 @@ const ServiceProviderViewBooking = ({setBookedData}) => {
                 delete item.GoldenParameters;
                 delete item.AddonsParameters;
                 delete item.Quantity;
-  
+                delete item.createdAt
+                delete item.updatedAt
                 item.Details = index;
                 return item;
               });
@@ -72,7 +76,7 @@ const ServiceProviderViewBooking = ({setBookedData}) => {
     console.log(originalData);
     const getDetails = (index) => {
       console.log(index);
-      setBookedData(originalData[index]);
+      localStorage.setItem("data",JSON.stringify(originalData[index]));
       navigate("/serviceProvider/viewbooking/details");
     };
     return (
@@ -101,7 +105,7 @@ const ServiceProviderViewBooking = ({setBookedData}) => {
                   <TableComponent data={data} getDetails={getDetails} />
                 ) : (
                   <Typography variant="h5" sx={{ textAlign: "center" }}>
-                    You have not Booked any services yet.
+                    Your services have not Booked  yet.
                   </Typography>
                 )}
               </Grid>

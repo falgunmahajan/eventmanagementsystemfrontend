@@ -19,6 +19,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
+import { baseUrl } from "../../baseUrl";
 const ParameterForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [GoldenParameters, setGoldenParameters] = useState("");
@@ -49,8 +50,10 @@ const ParameterForm = () => {
   useEffect(() => {
     (async () => {
       let user;
+      let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
       try {
-        user = await axios.get("/api/validUser");
+          user = await axios.get(`${baseUrl}/api/validUser/${token}`)
+    
         console.log(user.data);
         console.log(service)
         // const userData=user.data.validUser;
@@ -64,13 +67,13 @@ const ParameterForm = () => {
       } else {
         if (user.data.validUser.Role == "Service Provider") {
           setLogin(true)
-      const res = await axios.get(`/api/getServiceOptions?service=${service}`);
+      const res = await axios.get(`${baseUrl}/api/getServiceOptions?service=${service}`);
       const {GoldenParameter,AddOnsParameter}=res.data;
       console.log(GoldenParameter,AddOnsParameter)
       setGoldenParameters(GoldenParameter);
       setAddOnsParameters(AddOnsParameter);
       setLoading(false);
-      const response = await axios.get("/api/getLocations")
+      const response = await axios.get(`${baseUrl}/api/getLocations`)
       setLocations(response.data)
       console.log(response.data)
       const GoldenArray=GoldenParameter && GoldenParameter.map(item=>{
@@ -194,7 +197,7 @@ const ParameterForm = () => {
   {
 
     try{
-      const res=await axios.post("/api/registerServices",data)
+      const res=await axios.post(`${baseUrl}/api/registerServices`,data)
       setError(false)
       setSuccess("Your data is successfully submit")
       setCheckBoxdata([...initial])

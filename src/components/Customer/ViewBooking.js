@@ -7,7 +7,8 @@ import { Grid, Typography } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import TableComponent from "../TableComponent";
 import { cloneDeep } from "lodash";
-const ViewBooking = ({ setBookedData }) => {
+import { baseUrl } from "../../baseUrl";
+const ViewBooking = () => {
   const navigate = useNavigate();
   const [originalData, setOriginalData] = useState();
   const [data, setData] = useState();
@@ -16,8 +17,10 @@ const ViewBooking = ({ setBookedData }) => {
   useEffect(() => {
     (async () => {
       let user;
+      let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
       try {
-        user = await axios.get("/api/validUser");
+          user = await axios.get(`${baseUrl}/api/validUser/${token}`)
+
         console.log(user.data);
       } catch (err) {
         user = "";
@@ -29,7 +32,7 @@ const ViewBooking = ({ setBookedData }) => {
           setLogin(true)
           console.log(user.data.validUser._id);
           const res = await axios.get(
-            `/api/getBookedData/${user.data.validUser._id}`
+            `${baseUrl}/api/getBookedData/${user.data.validUser._id}`
           );
           console.log(res.data);
           setOriginalData(res.data);
@@ -72,7 +75,7 @@ const ViewBooking = ({ setBookedData }) => {
   console.log(originalData);
   const getDetails = (index) => {
     console.log(index);
-    setBookedData(originalData[index]);
+    localStorage.setItem("data",JSON.stringify(originalData[index]));
     navigate("/viewbooking/details");
   };
   return (

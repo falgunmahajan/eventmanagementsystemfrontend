@@ -6,10 +6,17 @@ import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Footer from './Footer'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { baseUrl } from '../baseUrl'
 
 const SignUp = () => {
     const navigate=useNavigate()
-    const [user,setUser]=useState("")
+    const [user,setUser]=useState({
+        Role:"",
+        Name:"",
+        Contact:"",
+        Email:"",
+        Password:""
+    })
     const [error,setError]=useState(false)
     const [show,setShow]=useState(false)
     const [nameError,setNameError]=useState(false)
@@ -29,7 +36,7 @@ const SignUp = () => {
    console.log(user)
   
     try {
-        const res = await axios.post("/api/signup",user);
+        const res = await axios.post(`${baseUrl}/api/signup`,user);
         const data = await res.data
         console.log(data)
         setError(false)
@@ -80,8 +87,9 @@ const SignUp = () => {
         setPasswordError(true)
     }
   }
+
   const disabled=()=>{
-   return nameError || contactError || emailError || passwordError
+   return nameError || contactError || emailError || passwordError || !user.Name || !user.Role || !user.Contact || !user.Email || !user.Password
   }
   
     return (
@@ -90,7 +98,7 @@ const SignUp = () => {
             <Grid container spacing={2}   >
                 <Grid item xs={8} md={4} sx={{ mx: "auto", my: 10, pb: 2, pr: 2, backgroundImage: `url(${image})`, backgroundSize: "cover" }}>
                     {error && <Alert severity="error" sx={{ fontSize: 16, fontWeight: "bold" }}>{error}</Alert>}
-                    <form onSubmit={handleSubmit}  classNameName="bg-white p-4 w-100 my-2">
+                    <form onSubmit={handleSubmit}  className="bg-white p-4 w-100 my-2">
                         <Typography variant="h3" component="div" sx={{ textAlign: "center",mb:2 }}>
                             Sign Up
                         </Typography>
@@ -140,7 +148,7 @@ const SignUp = () => {
                              {passwordError && <span className="text-danger">Password must be atleast 8 characters long</span>}
                         <Button variant="contained" type="submit" disabled={disabled()} fullWidth sx={{ backgroundColor: "#d23838", '&:hover': { backgroundColor: "#d23838" }, my: 3, textTransform: "none", fontSize: 16 }}>Sign Up</Button>
                     </form>
-                    <p classNameName='text-white text-center mt-2'>If you have already registered please signin <br />
+                    <p className='text-white text-center mt-2'>If you have already registered please signin <br />
                     <Link to="/SignIn" style={{color:"white", textDecoration:"none"}}>SignIn</Link>
                     </p>
                 </Grid>

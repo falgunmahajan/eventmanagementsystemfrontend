@@ -3,13 +3,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import TableComponent from "../TableComponent";
 import { ClipLoader } from "react-spinners";
+import { baseUrl } from "../../baseUrl";
 
 const BookedCustomer = () => {
   const [bookedCustomer, setBookedCustomer] = useState("");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
-      const res = await axios.get("/api/getBookedCustomer");
+      const res = await axios.get(`${baseUrl}/api/getBookedCustomer`);
       let data = res.data.map((item) => {
         delete item._id;
         delete item.__v;

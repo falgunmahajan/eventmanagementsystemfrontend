@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { ClipLoader } from 'react-spinners';
 import TableComponent from '../TableComponent'
+import { baseUrl } from '../../baseUrl'
 
 const ServiceAdded = () => {
     const navigate=useNavigate();
@@ -15,8 +16,10 @@ const [login,setLogin]=useState(false)
 useEffect(()=>{
 (async()=>{
     let user;
+    let token=localStorage.getItem("user")&&JSON.parse(localStorage.getItem("user")).token
     try {
-      user = await axios.get("/api/validUser");
+        user = await axios.get(`${baseUrl}/api/validUser/${token}`)
+   
       console.log(user.data);
     } catch (err) {
       user = "";
@@ -27,7 +30,7 @@ useEffect(()=>{
       if (user.data.validUser.Role == "Service Provider") {
         setLogin(true)
         console.log(user.data.validUser._id)
-        const res = await axios.get(`/api/getServiceData?id=${user.data.validUser._id}`);
+        const res = await axios.get(`${baseUrl}/api/getServiceData?id=${user.data.validUser._id}`);
         console.log(res.data);
        let requiredData=(res.data).map(item=>{
         delete item._id;
@@ -35,6 +38,8 @@ useEffect(()=>{
         delete item.Service;
         delete item.ServiceAddedBy;
         delete item.ServiceProviderName;
+        delete item.createdAt;
+        delete item.updatedAt;
         return item;
          })
          setData(requiredData)
