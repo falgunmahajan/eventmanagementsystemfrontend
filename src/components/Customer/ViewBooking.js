@@ -60,6 +60,8 @@ const ViewBooking = () => {
               delete item.AddonsParameters;
               delete item.Quantity;
               delete item.Address;
+              delete item.createdAt;
+              delete item.updatedAt;
 
               item.Details = index;
               return item;
