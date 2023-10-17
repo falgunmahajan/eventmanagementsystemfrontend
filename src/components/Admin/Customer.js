@@ -16,6 +16,8 @@ const Customer = () => {
               delete item.__v;
               delete item.Role;
               delete item.Password;
+              delete item.createdAt;
+        delete item.updatedAt
               return item;
                })
        console.log(data)

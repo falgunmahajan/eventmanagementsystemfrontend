@@ -19,6 +19,8 @@ const BookedCustomer = () => {
         delete item.GoldenParameters;
         delete item.AddonsParameters;
         delete item.Quantity;
+        delete item.createdAt;
+        delete item.updatedAt
         const start = new Date(item.BookingStartDate);
         const end = new Date(item.BookingEndDate);
         item.BookingStartDate = `${`0${start.getDate()}`.slice(-2)}-${`0${

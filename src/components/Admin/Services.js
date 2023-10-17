@@ -14,6 +14,8 @@ const Services = () => {
        let data= (res.data).map(item=>{
               delete item._id;
               delete item.__v;
+              delete item.createdAt;
+        delete item.updatedAt
               return item;
                })
        console.log(data)
